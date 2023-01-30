@@ -1,8 +1,8 @@
 from sqlalchemy import Column, Date, Float, Integer, String
 from sqlalchemy.ext.declarative import declarative_base
 from utils.config import Configuration as cfg
+from app.database.base_class import Base
 
-Base = declarative_base()
 
 class weather_data_model(Base):
     __tablename__ = cfg.table_name
@@ -18,5 +18,5 @@ class weather_data_model(Base):
     population = Column(Integer)
     name = Column(String, index=True,  primary_key=True)
 
-    class Config:
-        orm_mode = True
+    # class Config:
+    #     orm_mode = True
