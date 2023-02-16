@@ -7,10 +7,10 @@ class WeatherDataBase(BaseModel):
     date: str
     lat: float
     long: float
-    PRCP: float
-    TAVG: float
-    TMAX: float
-    TMIN: float
+    precipitation: float
+    avg_temp: float
+    max_temp: float
+    min_temp: float
     population: float
     name: str
 

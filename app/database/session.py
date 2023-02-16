@@ -1,9 +1,20 @@
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, Session
-from utils.config import Configuration as cfg
 
 
-sqlalchemy_database_url = cfg.postgres_url
+class Configuration():
+    host = 'localhost'
+    port = '5432'
+    dbname = 'postgres'
+    username = 'postgres'
+    password = 'iwantsun'
+    table_name = 'all_city_weather_data'
+    dbschema = 'public'
+
+    postgres_url = f'postgresql://{username}:{password}@localhost:{port}/{dbname}'
+
+
+sqlalchemy_database_url = Configuration.postgres_url
 engine = create_engine(sqlalchemy_database_url) 
 
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)

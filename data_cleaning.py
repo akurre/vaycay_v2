@@ -95,7 +95,7 @@ if __name__ == "__main__":
     # save
     print('Saving...this could take awhile.')
     df.to_csv('data/weather_population_station_data_cleaned_30k_population.csv')
-    '''
+    
 
     # isolate cities and countries covered
     file_name = 'data/weather_population_station_data_cleaned_30k_population.csv'
@@ -111,7 +111,7 @@ if __name__ == "__main__":
     # with open('data/cities_countries_covered_population_30k.json', 'w') as fp:
     #     json.dump(cities_dict, fp)
 
-    '''
+    
     # further removing stations with least data
     print('Removing duplicate city entries')
     minimized = df.groupby('city')
@@ -143,15 +143,20 @@ if __name__ == "__main__":
     print('Saving...this could take awhile.')
     df.to_csv('data/minimized_weather_population_station_data_cleaned_30k_population.csv', index=False)
     '''
-
+    '''
     # migrate to PostgreSQL
     file_name = 'data/minimized_weather_population_station_data_cleaned_30k_population.csv'
     df = pd.read_csv(file_name)
     print("Transformations of dataframe complete. Now importing into PostgreSQL database. Preview of data: \n", df.head(15))
     df.to_sql(con=engine, index_label='index', name=cities_and_weather.__tablename__, if_exists='replace')
     print("Migration to PostgreSQL DB complete. ")
+    '''
 
-
-
-
-    
+    # transform csv to json
+    file_name = 'app/weather_data/minimized_weather_population_station_data_cleaned_30k_population.csv'
+    df = pd.read_csv(file_name, nrows=1000)
+    # print(df)
+    data = df.to_json(orient="records", force_ascii=False, indent=4)
+    with open('app/weather_data/minimized_weather_population_station_data_cleaned_30k_population.json', 'w') as f:
+        json.dump(data, f)
+    print(data)

@@ -8,4 +8,4 @@ class CRUDWeatherData(CRUDBase[WeatherDataBase]):
     ...
 
 # We instantiate the CRUDWeatherData class
-recipe = CRUDWeatherData(WeatherDataBase)  # 2
+weather_data = CRUDWeatherData(WeatherDataBase)  # 2
