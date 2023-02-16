@@ -153,10 +153,10 @@ if __name__ == "__main__":
     '''
 
     # transform csv to json
-    file_name = 'app/weather_data/minimized_weather_population_station_data_cleaned_30k_population.csv'
+    file_name = '../weather_data/minimized_weather_population_station_data_cleaned_30k_population.csv'
     df = pd.read_csv(file_name, nrows=1000)
     # print(df)
     data = df.to_json(orient="records", force_ascii=False, indent=4)
-    with open('app/weather_data/minimized_weather_population_station_data_cleaned_30k_population.json', 'w') as f:
+    with open('../weather_data/minimized_weather_population_station_data_cleaned_30k_population.json', 'w') as f:
         json.dump(data, f)
     print(data)

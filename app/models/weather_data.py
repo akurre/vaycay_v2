@@ -1,10 +1,9 @@
 from sqlalchemy import Column, Date, Float, Integer, String
-from sqlalchemy.ext.declarative import declarative_base
-from utils.config import Configuration as cfg
+from app.utils import Configuration as cfg
 from app.database.base_class import Base
 
 
-class weather_data_model(Base):
+class WeatherDataModel(Base):
     __tablename__ = cfg.table_name
     city = Column(String, nullable=False, primary_key=True)
     country = Column(String)
@@ -17,6 +16,7 @@ class weather_data_model(Base):
     TMIN = Column(Float)
     population = Column(Integer)
     name = Column(String, index=True,  primary_key=True)
+    submitter_id = Column(String)
 
     # class Config:
     #     orm_mode = True

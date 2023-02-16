@@ -1,5 +1,5 @@
 from app.crud.base import CRUDBase
-from app.models.weather_data import weather_data_model
+from app.models.weather_data import WeatherDataModel
 from app.schemas.weather_data import WeatherDataBase
 
 

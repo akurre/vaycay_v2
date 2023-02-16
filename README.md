@@ -1,7 +1,16 @@
 # vaycay_v2
 
+## To get things running...
 
-## Loading data into PostgreSQL database via Docker
+- `poetry install`
+- `poetry run python app/prestart.py`
+- `poetry run ./run.sh`
+- Open http://localhost:8001/
+
+
+
+ 
+### Loading data into PostgreSQL database via Docker
 
 <!-- Establish project -->
 docker exec -ti vaycay psql -U postgres     

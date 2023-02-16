@@ -1,7 +1,7 @@
-class Configuration():
+class Configuration:
     host = 'localhost'
     port = '5432'
-    dbname = 'vaycay'
+    dbname = 'postgres'
     username = 'postgres'
     password = 'iwantsun'
     table_name = 'all_city_weather_data'

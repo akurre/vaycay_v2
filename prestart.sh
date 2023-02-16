@@ -1,10 +1,13 @@
 #! /usr/bin/env bash
 
 # Let the DB start
+echo "Starting DB"
 python ./app/backend_pre_start.py
 
 # Run migrations
-alembic upgrade head    <---- ALEMBIC MIGRATION COMMAND
+echo "Running Migrations"
+alembic upgrade head
 
 # Create initial data in DB
+echo "Creating initial data"
 python ./app/initial_data.py
