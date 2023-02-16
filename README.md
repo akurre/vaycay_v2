@@ -6,6 +6,9 @@
 - `curl -sSL https://install.python-poetry.org | python3 -`
 ### Install dependencies
 - `poetry install`
+### Start PostgreSQL Docker container
+- `docker compose create`
+- only run the postgres container bc app doesn't work yet
 ### Run the DB connection tests/data migrations
 - `poetry run python app/prestart.py`
 - `poetry run ./run.sh`
