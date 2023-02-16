@@ -2,10 +2,14 @@
 
 ## To get things running...
 
+### First you need to get Poetry
+- `curl -sSL https://install.python-poetry.org | python3 -`
+### Install dependencies
 - `poetry install`
+### Run the DB connection tests/data migrations
 - `poetry run python app/prestart.py`
 - `poetry run ./run.sh`
-- Open http://localhost:8001/
+- Open http://localhost:8000/
 
 
 
