@@ -7,14 +7,13 @@ import logging
 
 from app.main import ROOT
 
+
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 alembic_cfg = Config(ROOT / "alembic.ini")
 
-try:
-    subprocess.run([sys.executable, "./app/backend_pre_start.py"])
-    command.upgrade(alembic_cfg, "head")
-    subprocess.run([sys.executable, "./app/initial_data.py"])
-except Exception as e:
-    print(e)
+subprocess.run([sys.executable, "./app/backend_pre_start.py"])
+command.upgrade(alembic_cfg, "head")
+subprocess.run([sys.executable, "./app/initial_data.py"])
+

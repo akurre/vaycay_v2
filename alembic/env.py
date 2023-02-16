@@ -3,9 +3,8 @@ from __future__ import with_statement
 from alembic import context
 from sqlalchemy import engine_from_config, pool
 from logging.config import fileConfig
-from app.models.weather_data import WeatherDataModel
 
-from app.database.base import Base  # noqa
+from app.database.base_class import Base  # noqa
 from app.utils.config import Configuration
 
 
@@ -18,7 +17,7 @@ config = context.config
 fileConfig(config.config_file_name)
 
 # add your model's MetaData object here
-target_metadata = WeatherDataModel.Base.metadata
+target_metadata = Base.metadata
 
 
 def get_url():

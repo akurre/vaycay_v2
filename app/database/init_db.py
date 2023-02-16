@@ -1,9 +1,6 @@
-# TODO Change all this....
 import logging
-
 from requests import Session
-from app import crud, schemas
-from database import base  # noqa: F401
+from app import schemas, crud
 import json
 from app.weather_data.weather_data_json import DATA
 
