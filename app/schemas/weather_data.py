@@ -16,11 +16,13 @@ class WeatherDataBase(BaseModel):
     population: float
     name: str
 
+
 class CreateWeatherData(WeatherDataBase):
     label: str
     source: str
     url: HttpUrl
     submitter_id: int
+
 
 class UpdateWeatherData(WeatherDataBase):
     label: str

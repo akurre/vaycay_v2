@@ -5,14 +5,14 @@ from app.database.base_class import Base
 
 
 class User(Base):
-    id = Column(Integer, primary_key=True, index=True)
+    date = Column(String, primary_key=True, index=True)
     first_name = Column(String(256), nullable=True)
     last_name = Column(String(256), nullable=True)
-    email = Column(String, index=True, nullable=False)
+    email = Column(String, nullable=False)
     is_superuser = Column(Boolean, default=False)
-    recipes = relationship(
-        "WeatherData",
-        cascade="all,delete-orphan",
-        back_populates="submitter",
-        uselist=True,
-    )
+    # weather_data_all = relationship(
+    #     "date",
+    #     cascade="all,delete-orphan",
+    #     # back_populates="submitter",
+    #     uselist=True,
+    # )

@@ -1,10 +1,7 @@
 import logging
 
-from database.init_db import init_db
-from database.session import SessionLocal
-import schemas
-import crud
-from weather_data.weather_data_json import DATA
+from app.database.init_db import init_db
+from app.database.session import SessionLocal
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -12,7 +9,7 @@ logger = logging.getLogger(__name__)
 
 def init() -> None:
     db = SessionLocal()
-    init_db(db, schemas=schemas, crud=crud, DATA=DATA)
+    init_db(db)
 
 
 def main() -> None:

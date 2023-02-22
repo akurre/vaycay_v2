@@ -10,13 +10,13 @@ class WeatherDataModel(Base):
     date = Column(Date, index=True, nullable=False, primary_key=True)
     lat = Column(String)
     long = Column(String)
-    PRCP = Column(Float)
-    TAVG = Column(Float)
-    TMAX = Column(Float)
-    TMIN = Column(Float)
+    precipitation = Column(Float)
+    avg_temp = Column(Float)
+    max_temp = Column(Float)
+    min_temp = Column(Float)
     population = Column(Integer)
     name = Column(String, index=True,  primary_key=True)
     submitter_id = Column(String)
 
-    # class Config:
-    #     orm_mode = True
+    class Config:
+        orm_mode = True

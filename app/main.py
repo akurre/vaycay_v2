@@ -16,7 +16,7 @@ ROOT = Path(__file__).resolve().parent.parent
 BASE_PATH = Path(__file__).resolve().parent
 
 
-app = FastAPI(title="Recipe API", openapi_url="/openapi.json")
+app = FastAPI(title="Vaycay App", openapi_url="/openapi.json")
 
 api_router = APIRouter()
 
