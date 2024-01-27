@@ -7,11 +7,11 @@ help: ## Show this help
 install: ## Install dependencies
 	poetry install
 
-start-deps: ## Start development dependencies with docker
+docker: ## Start development dependencies with docker
 	docker-compose up -d deps
 
 prestart: ## run prestart for alembic migrations
-	poetry run python3 prestart.py
+	poetry run prestart
 
 lint: ## Run flake8 and mypy
 	poetry run mypy .
@@ -24,7 +24,7 @@ format: ## Run black and isort
 data: start-deps ## import initial data
 	set -o allexport && source .env.local && poetry run db_initial_data_import
 
-start: start-deps ## Start local dev server
+start-deps: start-deps ## Start local dev server
 	set -o allexport && source .env.local && poetry run dev
 
 test: ## Run unit tests

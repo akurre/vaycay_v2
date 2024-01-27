@@ -1,5 +1,5 @@
 FROM python:3
 ENV PYTHONUNBUFFERED=1
-WORKDIR /app
-COPY . /app
+WORKDIR /vaycay
+COPY . /vaycay
 EXPOSE 8000

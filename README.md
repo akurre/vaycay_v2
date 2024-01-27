@@ -13,10 +13,10 @@
 ### Install dependencies
 - `poetry install`
 ### Start PostgreSQL Docker container
-- `make start-deps`
+- `make docker`
 ### Run the DB connection tests/data migrations
 - `make prestart`
-- `poetry run ./run.sh`
+- `make start-deps`
 - Open http://localhost:8000/
 
 

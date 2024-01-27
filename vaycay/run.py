@@ -1,7 +1,13 @@
 import uvicorn
 from alembic import command, config
 import traceback
+
+from alembic.config import Config
+
 from vaycay.db import session
+from vaycay.main import ROOT
+import subprocess
+import sys
 
 import logging
 
@@ -44,3 +50,14 @@ def migrate() -> None:
             command.upgrade(cfg, "head")
     except Exception as e:
         print("Failed to migrate:", e)  # noqa: T201
+
+
+def prestart() -> None:
+    logging.basicConfig(level=logging.INFO)
+
+    alembic_cfg = Config(ROOT / "alembic.ini")
+
+    subprocess.run([sys.executable, "./vaycay/backend_pre_start.py"])
+    command.upgrade(alembic_cfg, "head")
+    subprocess.run([sys.executable, "./vaycay/initial_data.py"])
+

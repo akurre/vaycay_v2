@@ -1,4 +1,7 @@
 import logging
+
+from termcolor import cprint
+import sqlalchemy
 from requests import Session
 from vaycay import schemas, crud
 import json
@@ -72,4 +75,9 @@ def init_db(db: Session) -> None:  # 1
             TMIN=cities["TMIN"],
             # submitter_id=user.id,
         )
-        crud.weather_data.create(db, obj_in=initial_weather_data_in)
+        try:
+            crud.weather_data.create(db, obj_in=initial_weather_data_in)
+        except sqlalchemy.exc.IntegrityError:
+            cprint(f"Duplicate key value: >> Has the data already been imported?? <<", "yellow")
+            print("Stopping import.")
+            exit()

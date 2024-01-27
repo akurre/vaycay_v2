@@ -16,7 +16,7 @@ ROOT = Path(__file__).resolve().parent.parent
 BASE_PATH = Path(__file__).resolve().parent
 
 
-app = FastAPI(title="Vaycay App", openapi_url="/openapi.json")
+vaycay = FastAPI(title="Vaycay App", openapi_url="/openapi.json")
 
 api_router = APIRouter()
 
@@ -53,14 +53,14 @@ def fetch_date(
     return result
 
 
-app.include_router(api_router)
+vaycay.include_router(api_router)
 
 
 if __name__ == "__main__":
     # Use this for debugging purposes only
     import uvicorn
 
-    uvicorn.run(app, host="0.0.0.0", port=8001, log_level="debug")
+    uvicorn.run(vaycay, host="0.0.0.0", port=8001, log_level="debug")
 
 
 
