@@ -22,7 +22,7 @@ api_router = APIRouter()
 
 
 @api_router.get("/", status_code=200)
-def root(
+async def root(
     request: Request,
     db: Session = Depends(deps.get_db),
 ) -> dict:
@@ -30,7 +30,8 @@ def root(
     Root GET
     """
     returned_data = crud.weather_data.get_multi(db=db, limit=10)
-    return {"request": request, "data": returned_data}
+    client_host = request.client
+    return {"request": client_host, "data": returned_data}
 
 
 @api_router.get("/day/{date_selected}", status_code=200, response_model=WeatherDataBase)
@@ -42,6 +43,7 @@ def fetch_date(
     """
     Fetch a single date by ID
     """
+    # session.query(User).get(1)
     result = crud.weather_data.get(db=db, date=date_selected)
     if not result:
         # the exception is raised, not returned - you will get a validation
