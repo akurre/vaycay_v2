@@ -1,6 +1,6 @@
-from app.crud.base import CRUDBase
-from app.models.weather_data import WeatherDataModel
-from app.schemas.weather_data import WeatherDataBase, CreateWeatherData, UpdateWeatherData
+from vaycay.crud.base import CRUDBase
+from vaycay.models.weather_data import WeatherDataModel
+from vaycay.schemas.weather_data import WeatherDataBase, CreateWeatherData, UpdateWeatherData
 
 
 # The class is defined with the relevant SQLAlchemy WeatherDataBase model

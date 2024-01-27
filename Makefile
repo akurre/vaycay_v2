@@ -7,6 +7,12 @@ help: ## Show this help
 install: ## Install dependencies
 	poetry install
 
+start-deps: ## Start development dependencies with docker
+	docker-compose up -d deps
+
+prestart: ## run prestart for alembic migrations
+	poetry run python3 prestart.py
+
 lint: ## Run flake8 and mypy
 	poetry run mypy .
 	poetry run flake8 .
@@ -14,9 +20,6 @@ lint: ## Run flake8 and mypy
 format: ## Run black and isort
 	poetry run black .
 	poetry run isort .
-
-start-deps: ## Start development dependencies with docker
-	docker-compose up -d deps
 
 data: start-deps ## import initial data
 	set -o allexport && source .env.local && poetry run db_initial_data_import
@@ -34,7 +37,7 @@ test-int: start-deps ## Start dependencies and run integration tests
 	set -o allexport && source .env.local && poetry run pytest -m "int" -s
 
 migrations-create: start-deps ## Create a new alembic migration, based on your code changes. Usage: make migrations-create m="your message"
-	set -o allexport && source .env.local && poetry run alembic revision --autogenerate -m "$(m)"
+	set -o allexport && source .env.local && alembic upgrade head && poetry run alembic revision --autogenerate -m "$(m)"
 
 migrations-run: start-deps ## Run migrations
 	set -o allexport && source .env.local && poetry run alembic upgrade head

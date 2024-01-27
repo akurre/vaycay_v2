@@ -147,7 +147,7 @@ if __name__ == "__main__":
     # migrate to PostgreSQL
     file_name = 'data/minimized_weather_population_station_data_cleaned_30k_population.csv'
     df = pd.read_csv(file_name)
-    print("Transformations of dataframe complete. Now importing into PostgreSQL database. Preview of data: \n", df.head(15))
+    print("Transformations of dataframe complete. Now importing into PostgreSQL db. Preview of data: \n", df.head(15))
     df.to_sql(con=engine, index_label='index', name=cities_and_weather.__tablename__, if_exists='replace')
     print("Migration to PostgreSQL DB complete. ")
     '''

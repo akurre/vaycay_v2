@@ -1,12 +1,12 @@
 import uvicorn
 from alembic import command, config
 import traceback
-from app.database import session
+from vaycay.db import session
 
 import logging
 
-from app.database.init_db import init_db
-from app.database.session import SessionLocal
+from vaycay.db.init_db import init_db
+from vaycay.db.session import SessionLocal
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -28,7 +28,7 @@ def db_initial_data_import() -> None:
 
 def dev() -> None:
     uvicorn.run(
-        "app.main:app",
+        "vaycay.main:vaycay",
         reload=True,
         # log_config="./logging.yaml",
         host="0.0.0.0",

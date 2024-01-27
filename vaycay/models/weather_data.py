@@ -1,6 +1,6 @@
 from sqlalchemy import Column, Date, Float, Integer, String
-from app.utils.config import Configuration as cfg
-from app.database.base_class import Base
+from vaycay.utils.config import Configuration as cfg
+from vaycay.db.base_class import Base
 
 
 class WeatherDataModel(Base):

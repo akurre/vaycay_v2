@@ -7,10 +7,9 @@
 ### Install dependencies
 - `poetry install`
 ### Start PostgreSQL Docker container
-- `docker compose create`
-- only run the postgres container bc app doesn't work yet
+- `make start-deps`
 ### Run the DB connection tests/data migrations
-- `poetry run python app/prestart.py`
+- `make prestart`
 - `poetry run ./run.sh`
 - Open http://localhost:8000/
 

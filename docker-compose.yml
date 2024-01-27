@@ -15,15 +15,15 @@ services:
         PGDATA: var/lib/postgresql/data/pgdata
 
   app:
-    container_name: app
+    container_name: vaycay
     env_file:
       - .env.local
     build: .
-#    command: bash -c "alembic upgrade head && uvicorn app/main:app --host 0.0.0.0 --port 8000 --reload"
+#    command: bash -c "alembic upgrade head && uvicorn vaycay/main:vaycay --host 0.0.0.0 --port 8000 --reload"
     environment:
       - DATABASE_URL=postgresql://postgres:local-password@postgres/postgres
     volumes:
-      - .:/app
+      - .:/vaycay
     ports:
       - 8000:8000
     depends_on:

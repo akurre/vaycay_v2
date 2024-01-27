@@ -4,8 +4,8 @@ from alembic import context
 from sqlalchemy import engine_from_config, pool
 from logging.config import fileConfig
 
-from app.database.base_class import Base  # noqa
-from app.utils.config import Configuration
+from vaycay.db.base_class import Base  # noqa
+from vaycay.utils.config import Configuration
 
 
 # this is the Alembic Config object, which provides

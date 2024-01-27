@@ -1,7 +1,7 @@
 import logging
 
-from app.database.init_db import init_db
-from app.database.session import SessionLocal
+from vaycay.db.init_db import init_db
+from vaycay.db.session import SessionLocal
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)

@@ -1,7 +1,7 @@
 from sqlalchemy import Integer, String, Column, Boolean
 from sqlalchemy.orm import relationship
 
-from app.database.base_class import Base
+from vaycay.db.base_class import Base
 
 
 class User(Base):

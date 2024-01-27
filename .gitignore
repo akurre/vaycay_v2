@@ -127,10 +127,11 @@ dmypy.json
 .DS_Store
 .DS_Store
 .DS_Store
-app/weather_data/minimized_weather_population_station_data_cleaned_30k_population.csv
+vaycay/weather_data/minimized_weather_population_station_data_cleaned_30k_population.csv
 uncleaned_data/AVERAGED_weather_station_data_ALL.csv
 uncleaned_data/cities_countries_covered.json
 uncleaned_data/cities_countries_covered_population_30k.json
 uncleaned_data/weather_population_station_data_cleaned.csv
 uncleaned_data/weather_population_station_data_cleaned_30k_population.csv
 uncleaned_data/worldcities.csv
+.DS_Store

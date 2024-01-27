@@ -5,7 +5,7 @@ from pydantic import BaseModel
 from sqlalchemy.orm import Session
 from datetime import date
 
-from app.database.base_class import Base
+from vaycay.db.base_class import Base
 
 
 ModelType = TypeVar("ModelType", bound=Base)

@@ -1,14 +1,14 @@
 from fastapi import FastAPI, APIRouter, Query, HTTPException, Request, Depends
 from datetime import date
 
-from app.crud import *
+from vaycay.crud import *
 from typing import Optional, Any
 from pathlib import Path
 from sqlalchemy.orm import Session
 
-from app.schemas.weather_data import WeatherDataBase
-from app import deps
-from app import crud
+from vaycay.schemas.weather_data import WeatherDataBase
+from vaycay import deps
+from vaycay import crud
 
 
 # Project Directories
@@ -68,22 +68,22 @@ if __name__ == "__main__":
 
 '''
 from datetime import datetime
-from app.database.base import get_db
+from vaycay.db.base import get_db
 import uvicorn
 from fastapi import FastAPI, Depends
 from typing import Optional
 from sqlalchemy.orm import Session      # type definition
-from app.models.weather_data import WeatherDataModel
-# uvicorn main:app --port 8080 --reload
+from vaycay.models.weather_data import WeatherDataModel
+# uvicorn main:vaycay --port 8080 --reload
 
 # load_dotenv(".env")
 
-app = FastAPI()
+vaycay = FastAPI()
 
 """GET"""
 class MasterClass:
     
-    @app.get('/date/{date_selected}')     
+    @vaycay.get('/date/{date_selected}')     
     def get_by_date(date_input): # -> Optional[json]:
         db_session = Depends(get_db)
         data_from_date = (
@@ -94,6 +94,6 @@ class MasterClass:
         return data_from_date if date_input else None
 
 if __name__ == "__main__":
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+    uvicorn.run(vaycay, host="0.0.0.0", port=8000)
 '''
 
