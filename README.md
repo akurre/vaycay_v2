@@ -20,6 +20,11 @@
 - Open http://localhost:8000/
 
 
+## Swagger
+
+- Url: http://0.0.0.0:8000/docs
+- date is in form `2020-XX-XX`
+
 ## Troubleshooting
 
 Sometimes, you might get an error with the FastAPI encoders.

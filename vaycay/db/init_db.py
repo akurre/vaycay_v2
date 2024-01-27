@@ -27,7 +27,7 @@ def upgrade() -> None:
         sa.Column("model", sa.String(), nullable=True),
         sa.Column("model_variant", sa.String(), nullable=True),
         sa.Column("variant", sa.String(), nullable=True),
-        sa.Column("defleetion_date", sa.Date(), nullable=False),
+        sa.Column("defleetion_date", sa.String(), nullable=False),
         sa.Column("defleetion_reason", sa.String(), nullable=True),
         sa.Column("created_at", sa.DateTime(), nullable=False),
         sa.Column("updated_at", sa.DateTime(), nullable=True),
@@ -43,23 +43,10 @@ def downgrade() -> None:
     op.drop_table("vehicles", schema=get_schema())
     # ### end Alembic commands ###
 
+
 def init_db(db: Session) -> None:  # 1
     print('Initializing DB')
-    # if FIRST_SUPERUSER:
-    #     user = crud.user.get_by_email(db, email=FIRST_SUPERUSER)  # 2
-    #     if not user:
-    #         user_in = schemas.UserCreate(
-    #             full_name="Initial Super User",
-    #             email=FIRST_SUPERUSER,
-    #             is_superuser=True,
-    #         )
-    #         user = crud.user.create(db, obj_in=user_in)
-    #     else:
-    #         logger.warning(
-    #             "Skipping creating superuser. User with email "
-    #             f"{FIRST_SUPERUSER} already exists. "
-    #         )
-    #     if not user.weather_data:
+
     for cities in json.loads(DATA):
         initial_weather_data_in = schemas.WeatherDataBase(
             city=cities["city"],
@@ -73,7 +60,6 @@ def init_db(db: Session) -> None:  # 1
             TAVG=cities["TAVG"],
             TMAX=cities["TMAX"],
             TMIN=cities["TMIN"],
-            # submitter_id=user.id,
         )
         try:
             crud.weather_data.create(db, obj_in=initial_weather_data_in)

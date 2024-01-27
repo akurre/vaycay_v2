@@ -7,7 +7,7 @@ class WeatherDataModel(Base):
     __tablename__ = cfg.table_name
     city = Column(String, nullable=False, primary_key=True)
     country = Column(String)
-    date = Column(Date, index=True, nullable=False, primary_key=True)
+    date = Column(String, index=True, nullable=False, primary_key=True)
     lat = Column(String)
     long = Column(String)
     precipitation = Column(Float)

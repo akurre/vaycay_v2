@@ -1,5 +1,4 @@
 from fastapi import FastAPI, APIRouter, Query, HTTPException, Request, Depends
-from datetime import date
 
 from vaycay.crud import *
 from typing import Optional, Any
@@ -29,29 +28,25 @@ async def root(
     """
     Root GET
     """
-    returned_data = crud.weather_data.get_multi(db=db, limit=10)
+    returned_data = crud.weather_data.get_all(db=db, limit=10)
     client_host = request.client
     return {"request": client_host, "data": returned_data}
 
 
-@api_router.get("/day/{date_selected}", status_code=200, response_model=WeatherDataBase)
-def fetch_date(
+@api_router.get("/day/{date_selected}", status_code=200)
+async def fetch_date(
     *,
-    date_selected: date,
+    date_selected: str,
     db: Session = Depends(deps.get_db),
 ) -> Any:
     """
     Fetch a single date by ID
     """
-    # session.query(User).get(1)
-    result = crud.weather_data.get(db=db, date=date_selected)
+    result = crud.weather_data.get_data_with_selected_date(db=db, date_selected=date_selected)
     if not result:
-        # the exception is raised, not returned - you will get a validation
-        # error otherwise.
         raise HTTPException(
             status_code=404, detail=f"Weather data for date {date_selected} not found"
         )
-
     return result
 
 

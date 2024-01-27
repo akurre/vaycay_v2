@@ -16,12 +16,18 @@ class WeatherDataBase(BaseModel):
     population: float
     name: str
 
+    class Config:
+        orm_mode = True
+
 
 class CreateWeatherData(WeatherDataBase):
     label: str
     source: str
     url: HttpUrl
     submitter_id: int
+
+    class Config:
+        orm_mode = True
 
 
 class UpdateWeatherData(WeatherDataBase):
