@@ -37,6 +37,9 @@ alembic = "^1.10.4"
 termcolor = "^2.4.0"
 
 
+[tool.poetry.group.dev.dependencies]
+poetryup = "^0.12.7"
+
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"

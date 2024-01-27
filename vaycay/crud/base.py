@@ -3,7 +3,6 @@ from typing import Any, Dict, Generic, List, Optional, Type, TypeVar, Union
 from fastapi.encoders import jsonable_encoder
 from pydantic import BaseModel
 from sqlalchemy.orm import Session
-from datetime import date
 
 from vaycay.db.base_class import Base
 
@@ -23,10 +22,12 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):  # 1
         """
         self.model = model
 
-    def get(self, db: Session, date_selected: date) -> Optional[ModelType]:
-        return db.query(self.model).filter(self.model.date_selected == date_selected).first()  # 3
+    def get_data_with_selected_date(
+        self, db: Session, *, date_selected: str, limit: int = 100
+    ) -> List[ModelType]:
+        return db.query(self.model).filter(self.model.date == date_selected).limit(limit).all()  # 3
 
-    def get_multi(
+    def get_all(
         self, db: Session, *, skip: int = 0, limit: int = 100
     ) -> List[ModelType]:
         return db.query(self.model).offset(skip).limit(limit).all()  # 4

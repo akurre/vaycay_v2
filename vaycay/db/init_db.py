@@ -5,7 +5,7 @@ import sqlalchemy
 from requests import Session
 from vaycay import schemas, crud
 import json
-from vaycay.weather_data.weather_data_json import DATA
+from vaycay.weather_data.weather_data_json import SAMPLE_DATA
 import sqlalchemy as sa
 import alembic as op
 from vaycay.db.utils import get_schema
@@ -47,7 +47,7 @@ def downgrade() -> None:
 def init_db(db: Session) -> None:  # 1
     print('Initializing DB')
 
-    for cities in json.loads(DATA):
+    for cities in json.loads(SAMPLE_DATA):
         initial_weather_data_in = schemas.WeatherDataBase(
             city=cities["city"],
             country=cities["country"],
