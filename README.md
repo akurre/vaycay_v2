@@ -20,6 +20,18 @@
 - Open http://localhost:8000/
 
 
+## Troubleshooting
+
+Sometimes, you might get an error with the FastAPI encoders.
+Replace the following:
+`        
+try:
+    data = vars(obj)`
+with
+`
+try:
+    data = dict(obj._asdict())
+`
 
 [//]: # ( )
 [//]: # (### Loading data into PostgreSQL database via Docker)
