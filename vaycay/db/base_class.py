@@ -5,7 +5,7 @@ from sqlalchemy.ext.declarative import as_declarative, declared_attr
 '''
 In other codebases/examples you may have seen this done like so:
 Base = declarative_base()
-In our case, we're doing the same thing but with a decorator (provided by SQLAlchemy) so that we can declare some helper methods on our Base class - 
+In my case, I'm doing the same thing but with a decorator (provided by SQLAlchemy) so that I can declare some helper methods on my Base class - 
 like automatically generating a __tablename__.
 '''
 

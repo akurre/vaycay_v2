@@ -27,6 +27,11 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):  # 1
     ) -> List[ModelType]:
         return db.query(self.model).filter(self.model.date == date_selected).limit(limit).all()  # 3
 
+    def get_data_with_selected_city(
+        self, db: Session, *, city_selected: str, limit: int = 100
+    ) -> List[ModelType]:
+        return db.query(self.model).filter(self.model.city == city_selected.title()).limit(limit).all()  # 3
+
     def get_all(
         self, db: Session, *, skip: int = 0, limit: int = 100
     ) -> List[ModelType]:

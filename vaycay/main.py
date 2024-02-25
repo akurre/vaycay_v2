@@ -8,7 +8,7 @@ from sqlalchemy.orm import Session
 from vaycay.schemas.weather_data import WeatherDataBase
 from vaycay import deps
 from vaycay import crud
-
+from fastapi.middleware.cors import CORSMiddleware
 
 # Project Directories
 ROOT = Path(__file__).resolve().parent.parent
@@ -19,33 +19,67 @@ vaycay = FastAPI(title="Vaycay App", openapi_url="/openapi.json")
 
 api_router = APIRouter()
 
+vaycay.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # Allows all origins
+    allow_credentials=True,
+    allow_methods=["*"],  # Allows all methods
+    allow_headers=["*"],  # Allows all headers
+)
 
 @api_router.get("/", status_code=200)
 async def root(
-    request: Request,
-    db: Session = Depends(deps.get_db),
+    request: Request
 ) -> dict:
     """
     Root GET
     """
+    client_host = request.client
+    return {"request": client_host, "return": "hello world!"}
+
+
+@api_router.get("/get_all", status_code=200)
+async def root(
+    request: Request,
+    db: Session = Depends(deps.get_db),
+) -> dict:
     returned_data = crud.weather_data.get_all(db=db, limit=10)
     client_host = request.client
     return {"request": client_host, "data": returned_data}
 
 
-@api_router.get("/day/{date_selected}", status_code=200)
+@api_router.get("/day/{month_and_day}", status_code=200)
 async def fetch_date(
     *,
-    date_selected: str,
+    month_and_day: str,
     db: Session = Depends(deps.get_db),
 ) -> Any:
     """
     Fetch a single date by ID
     """
+    date_selected = '2020-' + month_and_day[:2] + '-' + month_and_day[2:]
+    print('!!x!', month_and_day)
     result = crud.weather_data.get_data_with_selected_date(db=db, date_selected=date_selected)
     if not result:
         raise HTTPException(
             status_code=404, detail=f"Weather data for date {date_selected} not found"
+        )
+    return result
+
+@api_router.get("/city/{city_selected}", status_code=200)
+async def fetch_date(
+    *,
+    city_selected: str,
+    db: Session = Depends(deps.get_db),
+) -> Any:
+    """
+    Fetch a single date by ID
+    """
+    # city_selected = '2020-' + month_and_day[:2] + '-' + month_and_day[2:]
+    result = crud.weather_data.get_data_with_selected_city(db=db, city_selected=city_selected)
+    if not result:
+        raise HTTPException(
+            status_code=404, detail=f"Weather data for city {city_selected} not found"
         )
     return result
 

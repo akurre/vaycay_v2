@@ -9,10 +9,10 @@ class WeatherDataBase(BaseModel):
     date: str
     lat: float
     long: float
-    precipitation: Optional[float] = None
-    avg_temp: Optional[float] = None
-    max_temp: Optional[float] = None
-    min_temp: Optional[float] = None
+    PRCP: Optional[float] = None
+    TAVG: Optional[float] = None
+    TMAX: Optional[float] = None
+    TMIN: Optional[float] = None
     population: float
     name: str
 
