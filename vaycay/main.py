@@ -58,7 +58,6 @@ async def fetch_date(
     Fetch a single date by ID
     """
     date_selected = '2020-' + month_and_day[:2] + '-' + month_and_day[2:]
-    print('!!x!', month_and_day)
     result = crud.weather_data.get_data_with_selected_date(db=db, date_selected=date_selected)
     if not result:
         raise HTTPException(

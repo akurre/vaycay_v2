@@ -5,7 +5,7 @@ import sqlalchemy
 from requests import Session
 from vaycay import schemas, crud
 import json
-from vaycay.weather_data.minimized_weather_population_station_data_cleaned_30k_population import DATA
+from vaycay.weather_data.minimized_weather_population_station_data_cleaned_10k_population_Italy import DATA
 import sqlalchemy as sa
 import alembic as op
 from vaycay.db.utils import get_schema

@@ -8,7 +8,7 @@ install: ## Install dependencies
 	poetry install
 
 docker: ## Start development dependencies with docker
-	docker-compose up -d deps
+	docker-compose up
 
 prestart: ## run prestart for alembic migrations
 	poetry run prestart
