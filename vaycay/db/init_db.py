@@ -8,6 +8,7 @@ import json
 import sqlalchemy as sa
 import alembic as op
 from vaycay.db.utils import get_schema
+from vaycay.utils.const import DATA_TO_LOAD
 
 logger = logging.getLogger(__name__)
 
@@ -46,7 +47,7 @@ def downgrade() -> None:
 def init_db(db: Session) -> None:  # 1
     print('Initializing DB')
 
-    with open("vaycay/weather_data/april2024/cleaned_weather-data_10000population_Italy.json", "r") as file:
+    with open(DATA_TO_LOAD, "r") as file:
         data = json.load(file)
 
     for cities in data:

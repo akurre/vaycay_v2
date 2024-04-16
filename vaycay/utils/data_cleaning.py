@@ -36,12 +36,8 @@ if __name__ == "__main__":
     # Delete cities with only precip
     start_time = time.time()
     print('Deleting cities with only precipitation data.')
-    grouped = df.groupby('name')
-    for name, group in grouped:
-        unique = df['data_type'].unique()
-        if 'T' not in ''.join(unique):
-            df.drop(grouped.get_group(name).index)
-            print(f"{name} only has PRCP data - dropped!")
+    # Group by 'name' and filter out groups that only contain 'PRCP' in 'data_type'
+    df = df.groupby('name').filter(lambda x: not (x['data_type'] == 'PRCP').all())
     print(f'Time taken: {time.time() - start_time:.2f} seconds. \n\n')
 
     # Read in city/population data
@@ -98,7 +94,7 @@ if __name__ == "__main__":
 
     # save just in case something goes wrong later
     print('Saving...this could take awhile.')
-    df.to_csv(f'/Users/ashlenlaurakurre/Documents/GitHub/vaycay_v2/vaycay/weather_data/16April2024/minimized_weather_population_station_data_cleaned_{population_limit}population_{country_to_filter}.csv')
+    df.to_csv(f'/Users/ashlenlaurakurre/Documents/GitHub/vaycay_v2/vaycay/weather_data/april2024/datacleaning1-intermediate_{population_limit}population_{country_to_filter}.csv')
 
     # further removing stations with least data
     start_time = time.time()
@@ -132,14 +128,20 @@ if __name__ == "__main__":
     # save csv
     print('Saving...this could take awhile.')
     df.to_csv(
-        f'/Users/ashlenlaurakurre/Documents/GitHub/vaycay_v2/vaycay/weather_data/minimized_weather_population_station_data_cleaned_{pop_limit/1000}k_population_{country}.csv',
+        f'/Users/ashlenlaurakurre/Documents/GitHub/vaycay_v2/vaycay/weather_data/april2024/datacleaning1-fin_{population_limit/1000}k_population_{country_to_filter}.csv',
         index=False)
 
     # transform csv to json
     print('transforming csv to json')
-    file_name = '/Users/ashlenlaurakurre/Documents/GitHub/vaycay_v2/vaycay/weather_data/minimized_weather_population_station_data_cleaned_10k_population_Italy.csv'
-    df = pd.read_csv(file_name, nrows=JSON_LIMIT_ROWS)
+    # file_name = '/Users/ashlenlaurakurre/Documents/GitHub/vaycay_v2/vaycay/weather_data/minimized_weather_population_station_data_cleaned_10k_population_Italy.csv'
+    # df = pd.read_csv(file_name, nrows=JSON_LIMIT_ROWS)
     # print(df)
-    data = df.to_json(orient="records", force_ascii=False, indent=4)
-    with open('../weather_data/minimized_weather_population_station_data_cleaned_10k_population_Italy.py', 'w') as f:
-        json.dump(data, f)
+    df['date'] = df['date'].dt.strftime('%Y-%m-%d')
+
+    df.to_json(
+        f'/Users/ashlenlaurakurre/Documents/GitHub/vaycay_v2/vaycay/weather_data/april2024/datacleaning1-fin_{population_limit/1000}k_population_{country_to_filter}.json',
+        orient='records',
+        force_ascii=False,
+        indent=4
+    )
+
