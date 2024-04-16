@@ -8,7 +8,7 @@ import os
 pd.set_option('display.max_columns', None)
 
 # Constants
-PATH_PREFIX = '/Users/ashlenlaurakurre/Documents/GitHub/vaycay_v2/'
+PATH_PREFIX = '//'
 COUNTRY_FILTER = 'Italy'
 POPULATION_LIMIT = 10000
 BUFFER_SIZE = 0.5

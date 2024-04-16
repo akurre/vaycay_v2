@@ -1,13 +1,12 @@
 import pandas as pd
 import time
-import geopandas as gpd
 import os
 from geopy.geocoders import Nominatim
 from geopy.extra.rate_limiter import RateLimiter
 
 # Settings
 pd.set_option('display.max_columns', None)
-limit_region = True
+limit_region = False
 
 # Constants
 PATH_PREFIX = '/Users/ashlenlaurakurre/Documents/GitHub/vaycay_v2/'
@@ -28,8 +27,9 @@ if limit_region:
     CITY_SPEC_OUTPUT_FILENAME = f'{lat_range}_{long_range}_location_specific_data.csv'
 else:
     CITY_SPEC_OUTPUT_FILENAME = f'ALL_location_specific_data.csv'
+CITY_SPEC_OUTPUT_FILENAME_2 = f'ALL_location_specific_data_simplified.csv'
 CITY_SPEC_OUTPUT = PATH_PREFIX + 'vaycay/city_data/' + CITY_SPEC_OUTPUT_FILENAME
-
+CITY_SPEC_OUTPUT_2 = PATH_PREFIX + 'vaycay/city_data/' + CITY_SPEC_OUTPUT_FILENAME_2
 
 
 def read_and_prepare_data():
@@ -50,38 +50,40 @@ def read_and_prepare_data():
 def get_unique_locations(df_weather):
     print("Getting unique locations from original dataframe...")
     unique_locs = df_weather[['lat', 'long']].drop_duplicates().reset_index(drop=True)
+    print(len(unique_locs))
+    exit()
     return unique_locs
 
 
 def reverse_geocode_locations(unique_locs):
+    print("Starting the reverse geo-coding...")
     geolocator = Nominatim(user_agent="geoapi_exercises")
     reverse = RateLimiter(geolocator.reverse, min_delay_seconds=1)
 
     # Reverse geocode each unique location
     unique_locs['location'] = unique_locs.apply(lambda row: reverse((row['lat'], row['long']), language='en'), axis=1)
+    os.makedirs(os.path.dirname(CITY_SPEC_OUTPUT), exist_ok=True)
+    unique_locs.to_csv(CITY_SPEC_OUTPUT_2)
 
     # Extract city or fallback to village if city is not available
+    print("Extracting the data from the reverse geocode results...")
     unique_locs['city'] = unique_locs['location'].apply(
         lambda loc: loc.raw['address'].get('city',
                                            loc.raw['address'].get('village',
                                                                   loc.raw['address'].get('town', '') if loc else ''))
         if loc else ''
     )
-    print("Cities complete.")
 
     # Extract state or fallback to county if state is not available
     unique_locs['state'] = unique_locs['location'].apply(
         lambda loc: loc.raw['address'].get('state', loc.raw['address'].get('county', '') if loc else ''))
-    print("States complete.")
 
     # Continue with other location details as previously
     unique_locs['country'] = unique_locs['location'].apply(
         lambda loc: loc.raw['address'].get('country', '') if loc else '')
-    print("Countries complete.")
 
     unique_locs['suburb'] = unique_locs['location'].apply(
         lambda loc: loc.raw['address'].get('suburb', loc.raw['address'].get('municipality', '') if loc else ''))
-    print("Suburbs complete.")
 
     # Remove the location object to clean up the DataFrame
     unique_locs.drop(columns='location', inplace=True)
