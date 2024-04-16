@@ -1,125 +1,113 @@
-import json
 import pandas as pd
-import geopandas as gpd
 import time
+import geopandas as gpd
+import os
+
+# Settings
+pd.set_option('display.max_columns', None)
+
+# Constants
+PATH_PREFIX = '/Users/ashlenlaurakurre/Documents/GitHub/vaycay_v2/'
+COUNTRY_FILTER = 'Italy'
+POPULATION_LIMIT = 10000
+ALL_WEATHER_DATA_CSV = PATH_PREFIX + 'uncleaned_data/AVERAGED_weather_station_data_ALL.csv'
+WORLD_CITIES_CSV = PATH_PREFIX + 'uncleaned_data/worldcities.csv'
+OUTPUT_CSV = PATH_PREFIX + f'vaycay/weather_data/16April2024/cleaned_weather-data_{POPULATION_LIMIT}population_{COUNTRY_FILTER}.csv'
+JSON_OUTPUT = PATH_PREFIX + f'vaycay/weather_data/16April2024/cleaned_weather-data_{POPULATION_LIMIT}population_{COUNTRY_FILTER}.json'
+
+
+def read_and_prepare_data():
+    print("Reading weather data and reformatting date column...")
+    df_weather = pd.read_csv(
+        ALL_WEATHER_DATA_CSV,
+        usecols=['id', 'date', 'data_type', 'lat', 'long', 'name', 'AVG']
+    )
+    df_weather.rename(columns={'AVG': 'value'}, inplace=True)
+    df_weather['date'] = ((df_weather['date'].astype(str).str.zfill(4)) + '2020')
+    df_weather['date'] = pd.to_datetime(df_weather['date'], format='%m%d%Y')
+
+    print("Reading world city data...")
+    df_cities = pd.read_csv(
+        WORLD_CITIES_CSV,
+        usecols=['city', 'country', 'lat', 'lng', 'population']
+    )
+    print("Setting country and population limits...")
+    df_cities = df_cities[df_cities['population'] >= POPULATION_LIMIT]
+    df_cities = df_cities[df_cities['country'] == COUNTRY_FILTER]
+    df_cities.rename(columns={'lng': 'long'}, inplace=True)
+
+    return df_weather, df_cities
+
+
+def merge_datasets(df_weather, df_cities):
+    print("Converting dataframes to geodataframes...")
+
+    # Create GeoDataFrames
+    gdf_cities = gpd.GeoDataFrame(df_cities, geometry=gpd.points_from_xy(df_cities.long, df_cities.lat))
+    gdf_weather = gpd.GeoDataFrame(df_weather, geometry=gpd.points_from_xy(df_weather.long, df_weather.lat))
+    print(gdf_weather.head())
+    print(gdf_cities.head())
+
+    print("Performing spatial join...")
+    # Optional: Buffer the points if necessary to create an area within which to join. Adjust buffer size to your needs.
+    # Here, buffer size will depend on your coordinate system, 0.1 is just an example and might need to be adjusted.
+    gdf_cities['geometry'] = gdf_cities.geometry.buffer(
+        0.1)  # This buffer size is in degrees, suitable for geographic coordinate systems
+
+    # Spatial join cities and weather data, using 'intersects' to find overlapping points
+    gdf_merged = gpd.sjoin(gdf_cities, gdf_weather, how="inner", op='intersects')
+
+    # Drop the geometry columns if no longer needed
+    print(gdf_merged.head())
+    gdf_merged.drop(columns=['geometry', 'lat_right', 'long_right'], inplace=True)
+    gdf_merged.rename(columns={'long_left': 'long', 'lat_left': 'lat'}, inplace=True)
+
+    return gdf_merged
+
+
+def pivot_and_clean_data(df):
+    print("Pivoting data...")
+    df_pivot = df.pivot_table(
+        index=['city', 'country', 'lat', 'long', 'population', 'date', 'name'],
+        columns='data_type', values='value', aggfunc='first'
+    ).reset_index()
+    print(df_pivot.head())
+
+    # Handle missing TAVG
+    print("Filling in missing TAVGs...")
+    df_pivot['TAVG'] = df_pivot['TAVG'].fillna(df_pivot[['TMAX', 'TMIN']].mean(axis=1))
+
+    # make sure it's in celcius (it's celcius *10 right now)
+    for column in ['TMAX', 'TAVG', 'TMIN']:
+        df_pivot[column] = df_pivot[column].div(10).round(2)
+
+    # convert time
+    df_pivot['date'] = df_pivot['date'].dt.strftime('%Y-%m-%d')
+
+    return df_pivot
+
+
+def save_to_json(df):
+    print("Saving to JSON...")
+    # Check if the directory exists; if not, create it
+    os.makedirs(os.path.dirname(JSON_OUTPUT), exist_ok=True)
+
+    df.to_json(
+        JSON_OUTPUT,
+        orient='records',
+        force_ascii=False,
+        indent=4
+    )
+
+
+def main():
+    start_time = time.time()
+    df_weather, df_cities = read_and_prepare_data()
+    df_merged = merge_datasets(df_weather, df_cities)
+    df_cleaned = pivot_and_clean_data(df_merged)
+    save_to_json(df_cleaned)
+    print(f"Total time taken: {time.time() - start_time:.2f} seconds.")
+
 
 if __name__ == "__main__":
-    pd.set_option('display.max_columns', None)
-    start_time = time.time()
-
-    weather_file = '/Users/ashlenlaurakurre/Documents/GitHub/vaycay_v2/uncleaned_data/AVERAGED_weather_station_data_ALL.csv'
-    city_file = '/Users/ashlenlaurakurre/Documents/GitHub/vaycay_v2/uncleaned_data/worldcities.csv'
-    population_filter = 10000
-    json_rows_limit = 100000
-
-    # Read in weather data  (past time taken: 22.48 seconds)
-    print("Reading in weather data from CSV. Please wait.")
-    df = pd.read_csv(weather_file, nrows=10000)
-    print(f'Time taken: {time.time() - start_time:.2f} seconds. \n\n')
-
-    # Rename and reformat columns (past time taken: 21.13 seconds)
-    start_time = time.time()
-    print('Renaming and reformatting columns to datetime.')
-    df.rename(columns={'AVG': 'avg_temp_celcius'}, inplace=True)
-    df['date'] = pd.to_datetime(df['date'].astype(str).str.zfill(4) + '2020', format='%m%d%Y')
-    df = df[df['data_type'].isin(['TMIN', 'TMAX', 'TAVG', 'PRCP'])]
-    print(f'Time taken: {time.time() - start_time:.2f} seconds. \n\n')
-
-    # Filter out weather stations with only precipitation data (past time taken: 12.17 seconds)
-    start_time = time.time()
-    print('Filtering out weather stations with only precipitation data.')
-    grouped = df.groupby('name')
-    for name, group in grouped:
-        if 'T' not in group['data_type'].unique():
-            df.drop(group.index, inplace=True)
-    print(f'Time taken: {time.time() - start_time:.2f} seconds. \n\n')
-
-    # Read in city data, focusing on Italian cities with a significant population (past time taken: 0.06 seconds)
-    print(f'Reading in population dataframe - purging cities with population < {population_filter}')
-    world_cities_csv = '/Users/ashlenlaurakurre/Documents/GitHub/vaycay_v2/uncleaned_data/worldcities.csv'
-    df2 = pd.read_csv(world_cities_csv)
-    df2 = df2[['city', 'country', 'lat', 'lng', 'population']]
-    df2 = df2.rename(columns={'lng': 'long'})
-    # Filter for country below
-    country = 'Italy'
-    df2 = df2[(df2['country'] == country) & (df2['population'] >= population_filter)]
-
-    # Convert dataframes to GeoDataFrames (past time taken: 3.10 seconds)
-    start_time = time.time()
-    print('Convert dataframes to GeoDataFrames.')
-    gdf_stations = gpd.GeoDataFrame(df, geometry=gpd.points_from_xy(df.long, df.lat))
-    gdf_cities = gpd.GeoDataFrame(df2, geometry=gpd.points_from_xy(df2.long, df2.lat))
-    print(f'Time taken: {time.time() - start_time:.2f} seconds. \n\n')
-    print(df.head())
-    print(df2.head())
-    exit()
-
-    # Spatial join - find the nearest weather station for each city (past time taken: 73 minutes with 10k pop)
-    start_time = time.time()
-    print('Finding the nearest weather station for each city.')
-    nearest_station_ids = []
-    for index, city in gdf_cities.iterrows(): # Iterate over each row in the cities GeoDataFrame
-        # Find the nearest weather station's index
-        nearest_station_id = gdf_stations.distance(city.geometry).idxmin()
-        nearest_station_ids.append(nearest_station_id)
-        if index % 10 == 0:
-            print(f"Record {index}: Processing {city['city']} - Nearest Station ID: {nearest_station_id}")
-    # Assign the list of nearest station IDs back to the DataFrame
-    df2['nearest_station_id'] = nearest_station_ids
-    merged_df = df2.join(gdf_stations.loc[df2['nearest_station_id']].set_index(df2.index), rsuffix='_station')
-    print(f'Time taken: {time.time() - start_time:.2f} seconds')
-
-    # save in case of issues
-    print('Saving intermediate step...')
-    output_file_int = f'/Users/ashlenlaurakurre/Documents/GitHub/vaycay_v2/vaycay/weather_data/INTERMEDIATE_{population_filter / 1000}k_population_Italy_aigen.csv'
-    # merged_df.to_csv(output_file_int, index=False)
-    # print(merged_df.head())
-
-
-    # read in csv again in case of exit
-    merged_df = pd.read_csv(output_file_int)
-    sample_df = merged_df.loc[merged_df['city'] == 'Abbiategrasso']
-    print(sample_df.head(10))
-
-    # Pivot table for clean organization (past time taken:  seconds)
-    start_time = time.time()
-    print('Pivoting table.')
-    final_df = merged_df.pivot_table(index=['city', 'country', 'lat', 'long', 'population', 'date'],
-                                     columns='data_type', values='avg_temp_celcius').reset_index()
-    print(f'Time taken: {time.time() - start_time:.2f} seconds. \n\n')
-    print(final_df.head(10))
-    exit()
-
-    # Calculate average temperature if TAVG is missing (past time taken:  seconds)
-    start_time = time.time()
-    print('Calculating missing TAVG.')
-    final_df['TAVG'] = final_df.apply(
-        lambda row: (row['TMAX'] + row['TMIN']) / 2 if pd.isna(row['TAVG']) else row['TAVG'], axis=1)
-    print(f'Time taken: {time.time() - start_time:.2f} seconds. \n\n')
-
-    # Convert temperatures to Celsius and round them (past time taken:  seconds)
-    start_time = time.time()
-    print('Converting to Celsius and rounding.')
-    temp_cols = ['TMAX', 'TAVG', 'TMIN']
-    for column in temp_cols:
-        final_df[column] = final_df[column].div(10).round(2)
-    print(f'Time taken: {time.time() - start_time:.2f} seconds. \n\n')
-    print(final_df.head(60))
-
-
-    # Save the cleaned data (past time taken:  seconds)
-    output_file = f'/Users/ashlenlaurakurre/Documents/GitHub/vaycay_v2/vaycay/weather_data/minimized_weather_population_station_data_cleaned_{population_filter/1000}k_population_Italy_aigen.csv'
-    start_time = time.time()
-    print(f'Saving csv...this could take awhile.')
-    final_df.to_csv(output_file, index=False)
-    print(f"Data saved successfully! \n Time taken: {time.time() - start_time:.2f} seconds. \n\n")
-    exit()
-
-    # Transform csv to json (past time taken:  seconds)
-    start_time = time.time()
-    print(f'Transforming csv to json (.py) with limit of {json_rows_limit} rows.')
-    df = pd.read_csv(output_file, nrows=json_rows_limit)
-    data = df.to_json(orient="records", force_ascii=False, indent=4)
-    with open(f'{output_file[:-4]}.py', 'w') as f:
-        json.dump(data, f)
-    print(f'JSON file saved successfully! \n Time taken: {time.time() - start_time:.2f} seconds. \n\n')
+    main()

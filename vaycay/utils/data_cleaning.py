@@ -8,6 +8,7 @@ all_weather_data_csv = '/Users/ashlenlaurakurre/Documents/GitHub/vaycay_v2/uncle
 world_cities_csv = '/Users/ashlenlaurakurre/Documents/GitHub/vaycay_v2/uncleaned_data/worldcities.csv'
 country_to_filter = 'Italy'
 population_limit = 10000
+JSON_LIMIT_ROWS = 1000000
 
 
 if __name__ == "__main__":
@@ -137,7 +138,7 @@ if __name__ == "__main__":
     # transform csv to json
     print('transforming csv to json')
     file_name = '/Users/ashlenlaurakurre/Documents/GitHub/vaycay_v2/vaycay/weather_data/minimized_weather_population_station_data_cleaned_10k_population_Italy.csv'
-    df = pd.read_csv(file_name, nrows=100000)
+    df = pd.read_csv(file_name, nrows=JSON_LIMIT_ROWS)
     # print(df)
     data = df.to_json(orient="records", force_ascii=False, indent=4)
     with open('../weather_data/minimized_weather_population_station_data_cleaned_10k_population_Italy.py', 'w') as f:
