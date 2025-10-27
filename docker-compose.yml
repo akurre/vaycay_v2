@@ -52,6 +52,19 @@ services:
       retries: 3
       start_period: 10s
 
+  frontend:
+    container_name: vaycay-frontend
+    build:
+      context: ./client
+      dockerfile: Dockerfile
+      args:
+        REACT_APP_GRAPHQL_URL: http://graphql-api:4001/graphql
+    ports:
+      - "3000:80"
+    depends_on:
+      - graphql-api
+    restart: on-failure
+
   deps:
     image: tianon/true # very small image
     entrypoint: "/true"

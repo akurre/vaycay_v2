@@ -8,6 +8,15 @@ The end result of this project is to provide access to historical average weathe
 
 ## 🏗️ Technology Stack
 
+### Frontend (React)
+- **Framework**: React 18 with TypeScript
+- **GraphQL Client**: Apollo Client 4
+- **Routing**: React Router 6
+- **Styling**: Tailwind CSS
+- **UI Components**: Material-UI
+- **Map Visualization**: React Leaflet
+- **Port**: 3000
+
 ### GraphQL API (Current - Recommended)
 - **API Framework**: Apollo Server 4
 - **Schema**: Nexus (code-first GraphQL)
@@ -379,6 +388,105 @@ Services:
 - **PostgreSQL**: localhost:5431
 - **Python API**: localhost:8000
 - **GraphQL API**: localhost:4001
+
+## 🎨 React Frontend
+
+### Quick Start
+
+1. **Install Dependencies**:
+```bash
+cd client
+npm install
+```
+
+2. **Configure Environment**:
+The frontend uses environment variables to connect to the GraphQL API. Two environment files are already configured:
+
+- `client/.env.development` - For local development (points to localhost:4001)
+- `client/.env.production` - For Docker/production (points to graphql-api:4001)
+
+3. **Start the Development Server**:
+```bash
+cd client
+npm start
+```
+
+The frontend will be available at:
+- **Application**: http://localhost:3000
+- **Default Route**: http://localhost:3000/day/03-15 (March 15th weather map)
+
+### Features
+
+- **Interactive Weather Map**: Visualize weather data on a world map using Leaflet
+- **Date Selection**: Choose any date to see historical weather patterns
+- **City Markers**: Click on city markers to view detailed weather information
+- **GraphQL Integration**: Real-time data fetching with Apollo Client caching
+- **Responsive Design**: Mobile-friendly interface with Tailwind CSS
+
+### Available Routes
+
+| Route | Description |
+|-------|-------------|
+| `/` | Home page |
+| `/day/:date` | Weather map for a specific date (format: `MM-DD`, e.g., `/day/03-15`) |
+
+### NPM Scripts
+
+| Command | Description |
+|---------|-------------|
+| `npm start` | Start development server (port 3000) |
+| `npm run dev` | Alias for `npm start` |
+| `npm run build` | Build production bundle |
+| `npm test` | Run tests |
+
+### Docker Deployment
+
+The frontend can be run in Docker:
+
+```bash
+docker-compose up frontend
+```
+
+This will:
+- Build the React app with production optimizations
+- Serve it via Nginx on port 3000
+- Connect to the GraphQL API at `graphql-api:4001`
+
+### Architecture
+
+The frontend uses Apollo Client to communicate with the GraphQL API:
+
+```typescript
+// Apollo Client configuration
+const apolloClient = new ApolloClient({
+  uri: process.env.REACT_APP_GRAPHQL_URL || 'http://localhost:4001/graphql',
+  cache: new InMemoryCache(),
+});
+```
+
+**Key Components:**
+- `client/src/pages/date.tsx` - Main weather map page
+- `client/src/components/WorldMap.tsx` - Leaflet map component
+- `client/src/components/MapPopup.tsx` - Weather data popup
+- `client/src/components/dateNavigaton.tsx` - Date selection form
+- `client/src/api/dates/useWeatherByDate.ts` - GraphQL hook for fetching weather data
+
+### GraphQL Integration
+
+The frontend uses custom hooks to fetch data:
+
+```typescript
+// Fetch weather data for a specific date
+const { dataReturned, isLoading, isError } = useWeatherByDate('0315');
+```
+
+This hook:
+- Queries the GraphQL API using Apollo Client
+- Handles date format normalization (converts `03-15` to `0303`)
+- Provides loading and error states
+- Converts GraphQL data to legacy format for backward compatibility
+
+---
 
 ## 🚀 REST API Endpoints (Legacy)
 

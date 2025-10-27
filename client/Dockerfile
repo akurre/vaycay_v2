@@ -5,6 +5,11 @@ COPY package.json ./
 COPY package-lock.json ./
 RUN npm install
 COPY . ./
+
+# Build with production GraphQL URL
+ARG REACT_APP_GRAPHQL_URL
+ENV REACT_APP_GRAPHQL_URL=$REACT_APP_GRAPHQL_URL
+
 RUN npm run build
 
 # production environment

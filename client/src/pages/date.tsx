@@ -1,13 +1,13 @@
 import React from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { useFetchSpecifiedDate } from '../api/dates/useFetchSpecifiedDate';
+import { useWeatherByDate } from '../api/dates/useWeatherByDate';
 import DateEntryForm from '../components/dateNavigaton';
 import WorldMap from '../components/WorldMap';
 
 
 const DateWeatherPage: React.FC = () => {
   const { date } = useParams<{ date: string }>();
-  const { dataReturned: weatherData, isError, isLoading } = useFetchSpecifiedDate(String(date));
+  const { dataReturned: weatherData, isError, isLoading } = useWeatherByDate(String(date));
   const navigate = useNavigate();
   const handleDateSubmit = (formattedDate: string) => {
     // Redirect to the new date
