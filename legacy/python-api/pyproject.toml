@@ -1,0 +1,48 @@
+[tool.poetry]
+name = "vaycay_v2"
+version = "0.1.0"
+description = "To the Canary Islands and Beyond!"
+authors = ["Ashlen Kurre"]
+license = "n"
+readme = "README.md"
+packages = [
+    { include = "vaycay", from = "." },
+]
+
+[tool.poetry.scripts]
+dev = "vaycay.run:dev"
+db_initial_data_import = "vaycay.run:db_initial_data_import"
+migrate = "vaycay.run:migrate"
+prestart = "vaycay.run:prestart"
+
+[tool.poetry.dependencies]
+python = "^3.12"
+starlette = "0.22.0"
+pandas = "^1.5.3"
+fastapi = "0.89.1"
+FastAPI-SQLAlchemy = "^0.2.1"
+pipenv = "^2022.12.19"
+python-dateutil = "^2.8.2"
+python-dotenv = "^0.21.1"
+regex = "^2022.10.31"
+SQLAlchemy = "^2.0.0"
+uvicorn = "^0.20.0"
+virtualenv = "^20.17.1"
+tenacity = "^8.1.0"
+requests = "^2.28.2"
+psycopg2 = "^2.9.5"
+pydantic = {extras = ["email"], version = "^1.10.5"}
+pyyaml = "^6.0"
+alembic = "^1.10.4"
+termcolor = "^2.4.0"
+geopandas = "^1.0.0"
+folium = "^0.16.0"
+geopy = "^2.4.1"
+packaging = ">=23.2"
+
+
+[tool.poetry.group.dev.dependencies]
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

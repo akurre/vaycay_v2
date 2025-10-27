@@ -25,14 +25,8 @@ The end result of this project is to provide access to historical average weathe
 - **Runtime**: Node.js 20+
 - **Port**: 4001
 
-### Python REST API (Legacy - Being Phased Out)
-- **Backend Framework**: FastAPI 0.89.1
-- **ORM**: SQLAlchemy 2.0+
-- **Database Migrations**: Alembic
-- **Web Server**: Uvicorn
-- **Language**: Python 3.12+
-- **Dependency Management**: Poetry
-- **Port**: 8000
+### Legacy Python REST API (Archived)
+The original Python FastAPI backend has been archived to the `legacy/` directory. See the [Legacy Code](#-legacy-code) section below for details.
 
 ### Shared Infrastructure
 - **Database**: PostgreSQL (containerized with Docker)
@@ -556,108 +550,69 @@ Interactive API documentation is available via Swagger UI:
 
 Before setting up the project, ensure you have the following installed:
 
-- **Python 3.12+**: Required for running the application
-- **Poetry**: Python dependency management tool
-- **Docker & Docker Compose**: For running PostgreSQL database
-- **Make**: For using the provided Makefile commands (optional but recommended)
+- **Node.js 20+**: Required for running the GraphQL API and React frontend
+- **npm**: Node package manager (comes with Node.js)
+- **Docker & Docker Compose**: For running PostgreSQL database and containerized services
 
 ## 🛠️ Installation & Setup
 
-### 1. Install Poetry
+### Option 1: Docker Compose (Recommended)
+
+The easiest way to run the entire stack:
 
 ```bash
-curl -sSL https://install.python-poetry.org | python3 -
+# Start all services (database, GraphQL API, frontend)
+docker-compose up
+
+# Or run in detached mode
+docker-compose up -d
 ```
 
-### 2. Set up Environment with PyCharm (Optional)
+This will start:
+- **PostgreSQL**: localhost:5431
+- **GraphQL API**: localhost:4001
+- **React Frontend**: localhost:3000
 
-- Go to interpreter settings
-- Choose new Poetry environment
-- Select pyenv python 3.12
-  - Directory should look something like `/Users/.../.pyenv/versions/3.12.1/bin/python`
-- `poetry install` should be automatically run, but if not, proceed to step 3
+### Option 2: Local Development
 
-### 3. Install Dependencies
+#### 1. Start PostgreSQL Database
 
 ```bash
-poetry install
+docker-compose up db
 ```
 
-### 4. Configure Environment Variables
-
-Create a `.env.local` file in the root directory with your database configuration:
-
-```env
-DATABASE_URL=postgresql://postgres:iwantsun@localhost:5432/postgres
-POSTGRES_USER=postgres
-POSTGRES_PASSWORD=iwantsun
-```
-
-### 5. Start PostgreSQL Docker Container
+#### 2. Set Up GraphQL API
 
 ```bash
-make docker
+cd server
+npm install
+npx prisma migrate dev
+npm run import-data
+npm run dev
 ```
 
-alternatively
+The GraphQL API will be available at http://localhost:4001
+
+#### 3. Set Up React Frontend
 
 ```bash
-docker compose build --no-cache
+cd client
+npm install
+npm start
 ```
 
-This will start a PostgreSQL container on port 5431. I used 5431 because I often use 5432 as the port for my work's repo, and I like to keep it running.
+The frontend will be available at http://localhost:3000
 
-### 6. Run Database Migrations
+### Importing Data
+
+The GraphQL server includes a data import script:
 
 ```bash
-make prestart
+cd server
+npm run import-data
 ```
 
-This runs Alembic migrations to set up the database schema.
-
-### 7. Import Initial Weather Data
-
-```bash
-make data
-```
-
-This imports the historical weather data from the JSON file into the database.
-
-**⚠️ Important Note**: The data file path is currently hardcoded in `vaycay/utils/const.py`:
-```python
-DATA_TO_LOAD = '/Users/ashlenlaurakurre/Documents/GitHub/vaycay_v2/vaycay/weather_data/16April2024/datacleaning4_nopopulation_wholeEurope.json'
-```
-
-You may need to update this path to match your local setup if the data import fails.
-
-### 8. Start the Development Server
-
-```bash
-make start-deps
-```
-
-The API will be available at:
-- **API**: http://localhost:8000
-- **Swagger Docs**: http://localhost:8000/docs
-
-## 🔧 Development Workflow
-
-The project includes a Makefile with helpful commands:
-
-| Command | Description |
-|---------|-------------|
-| `make help` | Show all available commands |
-| `make install` | Install dependencies via Poetry |
-| `make docker` | Start PostgreSQL container |
-| `make prestart` | Run Alembic migrations |
-| `make start-deps` | Start the development server |
-| `make data` | Import initial weather data |
-| `make test` | Run unit tests |
-| `make test-int` | Run integration tests |
-| `make migrations-create m="message"` | Create new Alembic migration |
-| `make migrations-run` | Run pending migrations |
-| `make lint` | Run flake8 and mypy |
-| `make format` | Format code with black and isort |
+This imports the Italy dataset (214,054 records). The data is sourced from the legacy Python application's processed weather data files.
 
 ## 📁 Project Structure
 
@@ -679,31 +634,25 @@ vaycay_v2/
 │   ├── Dockerfile                   # GraphQL server container
 │   ├── package.json                 # Node.js dependencies
 │   └── tsconfig.json                # TypeScript configuration
-├── vaycay/                          # Python REST API (Legacy)
-│   ├── main.py                      # FastAPI application and routes
-│   ├── crud/                        # CRUD operations
-│   │   ├── base.py                  # Base CRUD class with query methods
-│   │   └── crud_weather_data.py     # Weather data CRUD operations
-│   ├── db/                          # Database configuration
-│   │   ├── session.py               # Database session management
-│   │   ├── init_db.py               # Database initialization
-│   │   └── base_class.py            # SQLAlchemy base class
-│   ├── models/                      # SQLAlchemy models
-│   │   └── weather_data.py          # Weather data model
-│   ├── schemas/                     # Pydantic schemas
-│   │   └── weather_data.py          # Weather data schemas
-│   ├── utils/                       # Utility functions
-│   │   ├── const.py                 # Constants (data file paths)
-│   │   └── config.py                # Configuration settings
-│   └── weather_data/                # Weather data files
-│       └── 16April2024/             # Data snapshot from April 2024
-│           └── cleaned_weather-data_10000population_Italy.json
-├── alembic/                         # Database migrations (Python)
-├── tests/                           # Test files
+├── client/                          # React Frontend
+│   ├── src/
+│   │   ├── pages/                   # Page components
+│   │   ├── components/              # Reusable components
+│   │   ├── api/                     # GraphQL queries and hooks
+│   │   └── types/                   # TypeScript type definitions
+│   ├── Dockerfile                   # Frontend container
+│   ├── package.json                 # Node.js dependencies
+│   └── tsconfig.json                # TypeScript configuration
+├── legacy/                          # Archived Python code
+│   ├── python-api/                  # Original FastAPI application
+│   │   ├── vaycay/                  # Main application code
+│   │   ├── alembic/                 # Database migrations
+│   │   ├── tests/                   # Python tests
+│   │   └── pyproject.toml           # Poetry dependencies
+│   ├── data-scripts/                # Data processing scripts
+│   └── README.md                    # Legacy documentation
+├── uncleaned_data/                  # Raw data files
 ├── docker-compose.yml               # Docker services configuration
-├── Dockerfile                       # Python API container definition
-├── pyproject.toml                   # Poetry dependencies
-├── Makefile                         # Development commands
 ├── MIGRATION_PLAN.md                # Migration roadmap
 └── README.md                        # This file
 ```
@@ -724,43 +673,68 @@ This dataset contains weather records for cities worldwide. The data has been cl
 2. The path is correctly configured for your local environment
 3. You have the necessary permissions to read the file
 
+## 🗂️ Legacy Code
+
+The original Python FastAPI backend has been archived to the `legacy/` directory as of October 27, 2025.
+
+**Migration Reason**: The project has been migrated to a modern TypeScript GraphQL stack for:
+- Better type safety across the entire stack
+- Modern development practices
+- Improved developer experience
+- Easier frontend integration with Apollo Client
+
+**What's Archived**:
+- Complete Python FastAPI application (`legacy/python-api/vaycay/`)
+- Alembic database migrations (`legacy/python-api/alembic/`)
+- Python tests and configuration files
+- Data cleaning and processing scripts (`legacy/data-scripts/`)
+
+**Running the Legacy API**:
+If you need to run the old Python API for reference, see `legacy/README.md` for instructions.
+
+**Migration Documentation**:
+For complete migration details, see `MIGRATION_PLAN.md`.
+
 ## 🐛 Troubleshooting
-
-### FastAPI Encoder Error
-
-Sometimes, you might get an error with the FastAPI encoders. If you encounter this issue:
-
-**Replace the following:**
-```python
-try:
-    data = vars(obj)
-```
-
-**With:**
-```python
-try:
-    data = dict(obj._asdict())
-```
 
 ### Database Connection Issues
 
 If you can't connect to the database:
 1. Ensure Docker is running: `docker ps`
 2. Check if PostgreSQL container is up: `docker-compose ps`
-3. Verify environment variables in `.env.local`
-4. Restart the database: `docker-compose down && docker-compose up`
+3. Verify the database is healthy: `docker-compose logs db`
+4. Restart the database: `docker-compose down && docker-compose up db`
+
+### GraphQL Server Issues
+
+If the GraphQL server won't start:
+1. Check if port 4001 is available: `lsof -i :4001`
+2. Verify Prisma client is generated: `cd server && npx prisma generate`
+3. Check database connection in `server/.env`
+4. View server logs: `docker-compose logs graphql-api`
+
+### Frontend Issues
+
+If the React frontend won't start:
+1. Check if port 3000 is available: `lsof -i :3000`
+2. Verify environment variables in `client/.env.development`
+3. Clear node_modules and reinstall: `rm -rf node_modules && npm install`
+4. Check that GraphQL API is running at http://localhost:4001
 
 ### Data Import Fails
 
-If the data import fails with "Duplicate key value" error:
-- The data has already been imported
-- To re-import, you need to drop and recreate the database tables
+If the data import fails:
+- Check that the data file exists in the legacy directory
+- Verify database connection
+- Check for duplicate key errors (data may already be imported)
+- View import logs for specific error messages
 
 ### Port Already in Use
 
-If port 8000 or 5432 is already in use:
-- Change the port in `docker-compose.yml` (for PostgreSQL)
-- Change the port in `vaycay/main.py` or when running uvicorn (for the API)
+If ports are already in use:
+- **PostgreSQL (5431)**: Change in `docker-compose.yml` under `db.ports`
+- **GraphQL API (4001)**: Change in `docker-compose.yml` under `graphql-api.ports` and `server/.env`
+- **Frontend (3000)**: Change in `docker-compose.yml` under `frontend.ports`
 
 ## 🔐 Database Configuration
 
@@ -796,6 +770,6 @@ Potential improvements for the project:
 
 This project is licensed under "n" (as specified in pyproject.toml).
 
-## 👤 Author
+## � Author
 
 Ashlen Kurre

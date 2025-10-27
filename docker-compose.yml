@@ -1,36 +1,28 @@
-
-
+version: '3.8'
 
 services:
+  # PostgreSQL Database
   db:
     platform: linux/x86_64
     container_name: postgres-db
-    image: postgres
+    image: postgres:15-alpine
     restart: always
     ports:
-      - 5431:5432
+      - "5431:5432"
     environment:
-        POSTGRES_USER: postgres
-        POSTGRES_PASSWORD: iwantsun
-        PGDATA: var/lib/postgresql/data/pgdata
-
-  app:
-    container_name: vaycay
-    env_file:
-      - .env.local
-    build: .
-    command: bash -c "sleep 5 && poetry install --no-interaction --no-ansi && alembic upgrade head && uvicorn vaycay.main:app --host 0.0.0.0 --port 8000 --reload"
-    environment:
-      - DATABASE_URL=postgresql://postgres:iwantsun@db:5432/postgres
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: iwantsun
+      POSTGRES_DB: postgres
+      PGDATA: /var/lib/postgresql/data/pgdata
     volumes:
-      - .:/vaycay
-    ports:
-      - 8000:8000
-    depends_on:
-      db:
-        condition: service_started
-    restart: on-failure
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
+  # TypeScript GraphQL API
   graphql-api:
     container_name: vaycay-graphql
     build:
@@ -39,11 +31,12 @@ services:
     ports:
       - "4001:4001"
     environment:
-      - DATABASE_URL=postgresql://postgres:iwantsun@db:5432/postgres
-      - PORT=4001
-      - NODE_ENV=production
+      DATABASE_URL: postgresql://postgres:iwantsun@db:5432/postgres
+      PORT: 4001
+      NODE_ENV: production
     depends_on:
-      - db
+      db:
+        condition: service_healthy
     restart: on-failure
     healthcheck:
       test: ["CMD", "node", "-e", "require('http').get('http://localhost:4001/', (r) => {process.exit(r.statusCode === 200 ? 0 : 1)})"]
@@ -52,6 +45,7 @@ services:
       retries: 3
       start_period: 10s
 
+  # React Frontend
   frontend:
     container_name: vaycay-frontend
     build:
@@ -65,10 +59,5 @@ services:
       - graphql-api
     restart: on-failure
 
-  deps:
-    image: tianon/true # very small image
-    entrypoint: "/true"
-    profiles:
-      - deps
-    depends_on:
-      - db
+volumes:
+  postgres_data:

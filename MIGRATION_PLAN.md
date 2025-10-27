@@ -564,7 +564,6 @@ services:
 - [x] Test thoroughly
 
 **Post-migration:**
-- [ ] Remove legacy REST code (optional - keeping for backward compatibility)
 - [x] Update Docker configuration
 - [x] Update documentation
 - [ ] Deploy to production
@@ -697,22 +696,575 @@ services:
 
 ---
 
-## 🎯 Phase 4: Cutover & Cleanup (When Ready)
+## 🎯 Phase 4: Code Cleanup & Legacy Migration
 
-### 10. **Switch Clients to GraphQL** (varies)
+### Overview
+With the GraphQL API fully functional and the frontend successfully migrated, Phase 4 focuses on cleaning up the codebase by archiving Python code and removing unused dependencies.
 
-- Update any frontend/clients to use GraphQL
-- Monitor for issues
-- Keep Python API as fallback
+### Goals
+1. Archive all Python backend code to the `legacy/` directory
+2. Remove unused Python dependencies and configuration files
+3. Clean up Docker configuration to remove Python services
+4. Update documentation to reflect the new architecture
+5. Simplify project structure for maintainability
 
-### 11. **Archive Python Code** (30 minutes)
+---
 
-Once validated:
+### 1. **Audit Current Python Files** (15 minutes)
 
-- Move `vaycay/` to `legacy/vaycay/`
-- Remove Python dependencies
-- Update documentation
-- Simplify Docker setup
+**Files to Archive:**
+
+**Core Python Backend:**
+- `vaycay/` - Entire Python FastAPI application directory
+  - `vaycay/__init__.py`
+  - `vaycay/main.py` - FastAPI entry point
+  - `vaycay/run.py` - Application runner
+  - `vaycay/backend_pre_start.py` - Startup script
+  - `vaycay/deps.py` - Dependencies
+  - `vaycay/initial_data.py` - Database initialization
+  - `vaycay/models/` - SQLAlchemy models
+  - `vaycay/crud/` - CRUD operations
+  - `vaycay/schemas/` - Pydantic schemas
+  - `vaycay/db/` - Database configuration
+  - `vaycay/city_data/` - City data CSVs
+  - `vaycay/weather_data/` - Weather data files
+
+**Python Configuration:**
+- `pyproject.toml` - Poetry dependencies
+- `poetry.lock` - Poetry lock file
+- `alembic.ini` - Alembic configuration
+- `alembic/` - Database migrations directory
+- `Dockerfile` - Python API Dockerfile (root level)
+- `Makefile` - Python-specific make commands
+
+**Python Utilities:**
+- `vaycay/utils/` - Utility scripts
+  - `vaycay/utils/CleanData_MatchCities_ExpandDatesAndWeather.py`
+  - `vaycay/utils/config.py`
+  - `vaycay/utils/const.py`
+  - `vaycay/utils/readdatatemp.py`
+  - `vaycay/utils/utils.py`
+
+**Data Cleaning Scripts:**
+- `uncleaned_data/plot_raw_data.py`
+- `weather_data/` - Old weather data directory
+
+**Tests:**
+- `tests/test_sql_app.py` - Python API tests
+
+**Files Already in Legacy:**
+- `legacy/data_cleaning.py`
+- `legacy/data_cleaning_2.py`
+- `legacy/data_cleaning_3.py`
+
+**Files to Keep:**
+- `server/` - TypeScript GraphQL API
+- `client/` - React frontend
+- `docker-compose.yml` - Will be updated to remove Python service
+- `.gitignore` - Will be cleaned up
+- `README.md` - Will be updated
+- `.env.local` - Environment variables (will be reviewed)
+
+---
+
+### 2. **Create Legacy Directory Structure** (10 minutes)
+
+```bash
+# Create organized legacy structure
+mkdir -p legacy/python-api
+mkdir -p legacy/python-api/alembic
+mkdir -p legacy/data-scripts
+mkdir -p legacy/config
+```
+
+**Proposed Legacy Structure:**
+```
+legacy/
+├── python-api/              # All Python FastAPI code
+│   ├── vaycay/             # Main application
+│   ├── alembic/            # Database migrations
+│   ├── tests/              # Python tests
+│   ├── pyproject.toml      # Poetry config
+│   ├── poetry.lock         # Poetry lock
+│   ├── alembic.ini         # Alembic config
+│   ├── Dockerfile          # Python Dockerfile
+│   └── Makefile            # Python make commands
+├── data-scripts/           # Data cleaning/processing
+│   ├── data_cleaning.py
+│   ├── data_cleaning_2.py
+│   ├── data_cleaning_3.py
+│   └── plot_raw_data.py
+├── data/                   # Old data files
+│   └── weather_data/
+└── README.md               # Legacy documentation
+```
+
+---
+
+### 3. **Move Python Backend to Legacy** (20 minutes)
+
+**Commands to execute:**
+
+```bash
+# Move main Python application
+mv vaycay legacy/python-api/
+
+# Move Alembic migrations
+mv alembic legacy/python-api/
+mv alembic.ini legacy/python-api/
+
+# Move Python tests
+mv tests legacy/python-api/
+
+# Move Python configuration
+mv pyproject.toml legacy/python-api/
+mv poetry.lock legacy/python-api/
+
+# Move Python Dockerfile and Makefile
+mv Dockerfile legacy/python-api/
+mv Makefile legacy/python-api/
+
+# Move data cleaning scripts
+mv uncleaned_data/plot_raw_data.py legacy/data-scripts/
+
+# Move old weather data
+mv weather_data legacy/data/
+```
+
+**Verify moves:**
+```bash
+# Check that files were moved correctly
+ls -la legacy/python-api/
+ls -la legacy/data-scripts/
+```
+
+---
+
+### 4. **Create Legacy Documentation** (15 minutes)
+
+**File: `legacy/README.md`**
+
+```markdown
+# Legacy Python FastAPI Backend
+
+This directory contains the original Python FastAPI backend that has been replaced by the TypeScript GraphQL API.
+
+## Archive Date
+October 27, 2025
+
+## Reason for Archival
+The Python FastAPI backend has been fully replaced by a modern TypeScript GraphQL API using:
+- **GraphQL**: Apollo Server with Nexus (code-first schema)
+- **ORM**: Prisma (replacing SQLAlchemy)
+- **Language**: TypeScript (replacing Python)
+- **Database**: PostgreSQL (unchanged)
+
+## What's Archived
+
+### Python API (`python-api/`)
+- **vaycay/**: Complete FastAPI application
+  - Models (SQLAlchemy)
+  - CRUD operations
+  - Pydantic schemas
+  - Database configuration
+  - City and weather data files
+- **alembic/**: Database migrations
+- **tests/**: Python API tests
+- **Configuration**: pyproject.toml, poetry.lock, alembic.ini
+- **Docker**: Dockerfile and Makefile
+
+### Data Scripts (`data-scripts/`)
+- Data cleaning and processing scripts
+- Plot generation utilities
+- These were used for initial data preparation
+
+### Data Files (`data/`)
+- Old weather data directory
+- Historical data files
+
+## Running the Legacy API (If Needed)
+
+If you need to run the old Python API for reference:
+
+```bash
+cd legacy/python-api
+
+# Install dependencies
+poetry install
+
+# Run migrations
+poetry run alembic upgrade head
+
+# Start server
+poetry run uvicorn vaycay.main:app --reload --host 0.0.0.0 --port 8000
+```
+
+## Migration Documentation
+
+See the main project's `MIGRATION_PLAN.md` for complete migration details.
+
+## New Architecture
+
+The current production system uses:
+- **GraphQL API**: `server/` directory (TypeScript)
+- **Frontend**: `client/` directory (React + Apollo Client)
+- **Database**: PostgreSQL with Prisma ORM
+
+For current development, see the main `README.md` in the project root.
+```
+
+---
+
+### 5. **Update Root .gitignore** (10 minutes)
+
+**File: `.gitignore`**
+
+Remove Python-specific entries that are no longer needed at root level:
+
+```bash
+# Remove these Python entries (they're now in legacy/)
+# __pycache__/
+# *.py[cod]
+# *$py.class
+# *.so
+# .Python
+# build/
+# develop-eggs/
+# dist/
+# downloads/
+# eggs/
+# .eggs/
+# lib/
+# lib64/
+# parts/
+# sdist/
+# var/
+# wheels/
+# *.egg-info/
+# .installed.cfg
+# *.egg
+# .pytest_cache/
+# .coverage
+# htmlcov/
+# .mypy_cache/
+# .dmypy.json
+# dmypy.json
+```
+
+**Keep only:**
+- Node.js entries (for server/ and client/)
+- Environment files (.env*)
+- IDE files (.vscode/, .idea/)
+- OS files (.DS_Store)
+- Database files (*.db)
+
+---
+
+### 6. **Update docker-compose.yml** (15 minutes)
+
+**File: `docker-compose.yml`**
+
+Remove the Python API service and simplify:
+
+```yaml
+version: '3.8'
+
+services:
+  # PostgreSQL Database
+  db:
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: iwantsun
+      POSTGRES_DB: postgres
+    ports:
+      - "5431:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - app-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # TypeScript GraphQL API
+  graphql-api:
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+    ports:
+      - "4001:4001"
+    environment:
+      DATABASE_URL: postgresql://postgres:iwantsun@db:5432/postgres
+      NODE_ENV: production
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - app-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:4001/.well-known/apollo/server-health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # React Frontend
+  frontend:
+    build:
+      context: ./client
+      dockerfile: Dockerfile
+      args:
+        REACT_APP_GRAPHQL_URL: http://graphql-api:4001/graphql
+    ports:
+      - "3000:80"
+    depends_on:
+      - graphql-api
+    networks:
+      - app-network
+
+volumes:
+  postgres_data:
+
+networks:
+  app-network:
+    driver: bridge
+```
+
+**Changes:**
+- ❌ Removed `api` service (Python FastAPI)
+- ✅ Kept `db` service (PostgreSQL)
+- ✅ Kept `graphql-api` service (TypeScript)
+- ✅ Kept `frontend` service (React)
+- ✅ Simplified network configuration
+
+---
+
+### 7. **Update Root README.md** (20 minutes)
+
+**File: `README.md`**
+
+Update to remove Python references and focus on TypeScript stack:
+
+**Changes to make:**
+1. Remove Python/FastAPI from tech stack
+2. Update architecture diagram
+3. Remove Python setup instructions
+4. Update quick start to only include TypeScript/React
+5. Add note about legacy Python code location
+6. Update project structure to reflect new organization
+
+**Add Legacy Section:**
+```markdown
+## Legacy Code
+
+The original Python FastAPI backend has been archived to the `legacy/` directory. See `legacy/README.md` for details.
+
+**Migration completed:** October 27, 2025
+**Reason:** Migrated to TypeScript GraphQL API for better type safety and modern development practices.
+```
+
+---
+
+### 8. **Clean Up Environment Files** (10 minutes)
+
+**File: `.env.local`**
+
+Review and remove Python-specific environment variables:
+
+**Remove:**
+- `POSTGRES_HOST` (if only used by Python)
+- `POSTGRES_PORT` (if only used by Python)
+- `POSTGRES_USER` (if only used by Python)
+- `POSTGRES_PASSWORD` (if only used by Python)
+- `POSTGRES_DB` (if only used by Python)
+- Any FastAPI-specific variables
+
+**Keep:**
+- `DATABASE_URL` (used by Prisma in TypeScript server)
+- Any frontend-specific variables
+
+**Note:** The TypeScript server uses `DATABASE_URL` directly, so individual connection parameters may not be needed.
+
+---
+
+### 9. **Update MIGRATION_PLAN.md** (5 minutes)
+
+Mark Phase 4 as complete and add completion notes:
+
+```markdown
+## ✅ Phase 4: Code Cleanup & Legacy Migration - COMPLETE
+
+### Completed Actions
+- [x] Audited all Python files
+- [x] Created organized legacy directory structure
+- [x] Moved Python backend to `legacy/python-api/`
+- [x] Moved data scripts to `legacy/data-scripts/`
+- [x] Created legacy documentation
+- [x] Updated root .gitignore
+- [x] Simplified docker-compose.yml (removed Python service)
+- [x] Updated root README.md
+- [x] Cleaned up environment files
+- [x] Archived all Python code successfully
+
+### Results
+- ✅ Clean project structure with only TypeScript/React code at root
+- ✅ All Python code preserved in `legacy/` for reference
+- ✅ Docker configuration simplified to 3 services (db, graphql-api, frontend)
+- ✅ Documentation updated to reflect new architecture
+- ✅ Project ready for production deployment
+```
+
+---
+
+### 10. **Verify Project Structure** (10 minutes)
+
+**Final project structure should look like:**
+
+```
+vaycay_v2/
+├── server/                    # TypeScript GraphQL API
+├── client/                    # React frontend
+├── legacy/                    # Archived Python code
+│   ├── python-api/           # Complete Python FastAPI app
+│   ├── data-scripts/         # Data processing scripts
+│   ├── data/                 # Old data files
+│   └── README.md             # Legacy documentation
+├── uncleaned_data/           # Raw data (keep for reference)
+├── docker-compose.yml        # 3 services: db, graphql-api, frontend
+├── .gitignore               # Cleaned up
+├── .env.local               # Simplified
+├── README.md                # Updated
+├── MIGRATION_PLAN.md        # This file
+└── logging.yaml             # Logging config (review if needed)
+```
+
+**Verification commands:**
+```bash
+# Check that Python files are gone from root
+ls -la | grep -E "(vaycay|alembic|pyproject|poetry)"
+
+# Check that legacy directory is populated
+ls -la legacy/python-api/
+
+# Check that TypeScript services still work
+cd server && npm run build
+cd ../client && npm run build
+
+# Test Docker build
+docker-compose build
+```
+
+---
+
+### 11. **Test Complete System** (20 minutes)
+
+**Start all services:**
+```bash
+docker-compose up -d
+```
+
+**Verify each service:**
+```bash
+# Check database
+docker-compose ps db
+
+# Check GraphQL API
+curl http://localhost:4001/.well-known/apollo/server-health
+
+# Check frontend
+curl http://localhost:3000
+
+# View logs
+docker-compose logs -f
+```
+
+**Test functionality:**
+1. Open http://localhost:3000
+2. Navigate to a date (e.g., /day/0315)
+3. Verify map displays with weather data
+4. Check browser console for errors
+5. Verify GraphQL queries in Network tab
+
+---
+
+### 12. **Git Commit Strategy** (10 minutes)
+
+**Recommended commit sequence:**
+
+```bash
+# Commit 1: Move Python code to legacy
+git add legacy/
+git commit -m "chore: archive Python FastAPI backend to legacy directory"
+
+# Commit 2: Remove Python files from root
+git rm -r vaycay/ alembic/ tests/
+git rm pyproject.toml poetry.lock alembic.ini Dockerfile Makefile
+git commit -m "chore: remove archived Python files from root"
+
+# Commit 3: Update configuration
+git add docker-compose.yml .gitignore .env.local
+git commit -m "chore: update Docker and config for TypeScript-only stack"
+
+# Commit 4: Update documentation
+git add README.md MIGRATION_PLAN.md legacy/README.md
+git commit -m "docs: update documentation for TypeScript migration completion"
+
+# Push all changes
+git push origin main
+```
+
+---
+
+### Phase 4 Checklist
+
+**Pre-cleanup:**
+- [ ] Verify GraphQL API is working
+- [ ] Verify frontend is working
+- [ ] Backup database if needed
+- [ ] Review all Python files to archive
+
+**Cleanup steps:**
+- [ ] Create legacy directory structure
+- [ ] Move Python backend to legacy
+- [ ] Move data scripts to legacy
+- [ ] Create legacy documentation
+- [ ] Update root .gitignore
+- [ ] Simplify docker-compose.yml
+- [ ] Update root README.md
+- [ ] Clean up environment files
+- [ ] Update MIGRATION_PLAN.md
+
+**Post-cleanup:**
+- [ ] Verify project structure
+- [ ] Test Docker build
+- [ ] Test all services
+- [ ] Commit changes to git
+- [ ] Deploy to production (if ready)
+
+---
+
+### Estimated Time: 2-3 hours
+
+**Breakdown:**
+- Planning & audit: 30 minutes
+- Moving files: 30 minutes
+- Updating configuration: 45 minutes
+- Documentation: 30 minutes
+- Testing & verification: 30 minutes
+- Git commits: 15 minutes
+
+---
+
+### Benefits of Phase 4 Completion
+
+1. **Cleaner Codebase**: Only TypeScript/React code at root level
+2. **Easier Onboarding**: New developers see modern stack immediately
+3. **Simpler Deployment**: Fewer services to manage
+4. **Better Maintainability**: Clear separation of current vs. legacy
+5. **Preserved History**: All Python code available for reference
+6. **Reduced Confusion**: No mixing of Python and TypeScript patterns
 
 ---
 
