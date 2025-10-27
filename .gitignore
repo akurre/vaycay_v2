@@ -123,10 +123,16 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+# macOS
 .DS_Store
-.DS_Store
-.DS_Store
-.DS_Store
+
+# Node.js / Server
+server/node_modules/
+server/dist/
+server/schema.graphql
+server/nexus-typegen.ts
+server/.env
 vaycay/weather_data/minimized_weather_population_station_data_cleaned_30k_population.csv
 uncleaned_data/AVERAGED_weather_station_data_ALL.csv
 uncleaned_data/cities_countries_covered.json

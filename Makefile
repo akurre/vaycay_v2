@@ -7,8 +7,11 @@ help: ## Show this help
 install: ## Install dependencies
 	poetry install
 
-docker: ## Start development dependencies with docker
-	docker-compose up
+docker: ## Build and start development dependencies with docker
+	docker compose build && docker compose up
+
+docker-clean: ## Build docker without cache and start
+	docker compose build --no-cache && docker compose up
 
 prestart: ## run prestart for alembic migrations
 	poetry run prestart

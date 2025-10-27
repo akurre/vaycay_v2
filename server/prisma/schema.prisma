@@ -1,0 +1,46 @@
+// Prisma schema for Vaycay weather data
+// This schema matches the existing PostgreSQL database structure
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model WeatherData {
+  // Composite primary key (city, date, name)
+  city   String
+  date   String
+  name   String  // Weather station name
+  
+  // Location information
+  country    String?
+  state      String?
+  suburb     String?
+  lat        String?
+  long       String?
+  population Float?   // City population
+  
+  // Weather metrics
+  PRCP    Float?  // Precipitation (mm)
+  SNWD    Float?  // Snow depth (mm)
+  TAVG    Float?  // Average temperature (°C)
+  TMAX    Float?  // Maximum temperature (°C)
+  TMIN    Float?  // Minimum temperature (°C)
+  
+  // Metadata
+  submitter_id String?
+  
+  // Composite primary key definition
+  @@id([city, date, name])
+  
+  // Indexes for query performance
+  @@index([date])
+  @@index([city])
+  
+  // Map to existing table name
+  @@map("weather_data")
+}

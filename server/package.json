@@ -1,0 +1,40 @@
+{
+  "name": "vaycay-graphql-server",
+  "version": "1.0.0",
+  "description": "GraphQL API for Vaycay weather data",
+  "main": "dist/index.js",
+  "scripts": {
+    "dev": "ts-node-dev --respawn --transpile-only src/index.ts",
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "generate": "ts-node src/schema.ts",
+    "prisma:generate": "prisma generate",
+    "prisma:migrate": "prisma migrate dev",
+    "prisma:studio": "prisma studio",
+    "prisma:pull": "prisma db pull",
+    "import-data": "ts-node scripts/import-data.ts"
+  },
+  "keywords": [
+    "graphql",
+    "apollo",
+    "prisma",
+    "weather",
+    "api"
+  ],
+  "author": "Ashlen Kurre",
+  "license": "ISC",
+  "dependencies": {
+    "@apollo/server": "^4.10.0",
+    "@prisma/client": "^5.9.0",
+    "graphql": "^16.8.1",
+    "nexus": "^1.3.0",
+    "dotenv": "^16.4.1"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.5",
+    "prisma": "^5.9.0",
+    "ts-node": "^10.9.2",
+    "ts-node-dev": "^2.0.0",
+    "typescript": "^5.3.3"
+  }
+}

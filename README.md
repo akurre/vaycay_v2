@@ -1,23 +1,34 @@
 # vaycay_v2
 
-**Vaycay v2** is a FastAPI-based REST API that provides historical average weather data for locations worldwide. The system enables users to query weather statistics for specific dates or cities, helping with vacation planning based on historical weather patterns.
+**Vaycay v2** is a weather data API platform providing historical average weather data for locations worldwide. The system is currently migrating from a Python FastAPI REST API to a modern TypeScript GraphQL API, enabling users to query weather statistics for specific dates or cities to help with vacation planning based on historical weather patterns.
 
 ## 🎯 Project Goal
 
-The end result of this project is to provide access to historical average weather data for any given location and day of the year. Users can query weather metrics including temperature (average, min, max) and precipitation for cities around the world.
+The end result of this project is to provide access to historical average weather data for any given location and day of the year. Users can query weather metrics including temperature (average, min, max), precipitation, and snow depth for cities around the world.
 
 ## 🏗️ Technology Stack
 
+### GraphQL API (Current - Recommended)
+- **API Framework**: Apollo Server 4
+- **Schema**: Nexus (code-first GraphQL)
+- **Database ORM**: Prisma
+- **Language**: TypeScript 5.3+
+- **Runtime**: Node.js 20+
+- **Port**: 4001
+
+### Python REST API (Legacy - Being Phased Out)
 - **Backend Framework**: FastAPI 0.89.1
-- **Database**: PostgreSQL (containerized with Docker)
 - **ORM**: SQLAlchemy 2.0+
 - **Database Migrations**: Alembic
 - **Web Server**: Uvicorn
 - **Language**: Python 3.12+
 - **Dependency Management**: Poetry
-- **Data Processing**: Pandas, GeoPandas, Folium
-- **Geolocation**: Geopy
+- **Port**: 8000
+
+### Shared Infrastructure
+- **Database**: PostgreSQL (containerized with Docker)
 - **Containerization**: Docker & Docker Compose
+- **Data Processing**: Pandas, GeoPandas, Folium, Geopy
 
 ## 📊 Data Structure
 
@@ -47,9 +58,331 @@ Each weather record contains:
 
 The application uses a PostgreSQL database with a single main table (`weather_data`) that stores all weather records. The table uses a composite primary key consisting of `city`, `date`, and `name` (weather station).
 
-## 🚀 API Endpoints
+## 🚀 GraphQL API (Recommended)
 
-The API provides the following endpoints:
+### Quick Start
+
+1. **Install Dependencies**:
+```bash
+cd server
+npm install
+```
+
+2. **Configure Environment**:
+Create `server/.env`:
+```env
+DATABASE_URL=postgresql://postgres:iwantsun@localhost:5431/postgres
+PORT=4001
+NODE_ENV=development
+```
+
+3. **Run Prisma Migrations**:
+```bash
+cd server
+npx prisma migrate dev
+```
+
+4. **Import Weather Data**:
+```bash
+cd server
+npm run import-data
+```
+
+This imports the Italy dataset (214,054 records). For the global dataset:
+```bash
+npm run import-data -- --file=vaycay/weather_data/global_weather_data_cleaned.json
+```
+
+5. **Start the GraphQL Server**:
+```bash
+cd server
+npm run dev
+```
+
+The GraphQL API will be available at:
+- **GraphQL Endpoint**: http://localhost:4001/
+- **GraphQL Playground**: http://localhost:4001/
+
+### Available Queries
+
+#### 1. Get Weather Data (Paginated)
+Retrieve a paginated list of weather records with all available fields:
+
+```graphql
+query GetWeatherData {
+  weatherData(limit: 10, offset: 0) {
+    city
+    country
+    state
+    suburb
+    date
+    lat
+    long
+    population
+    avgTemperature
+    maxTemperature
+    minTemperature
+    precipitation
+    snowDepth
+    stationName
+    submitterId
+  }
+}
+```
+
+**Example Response:**
+```json
+{
+  "data": {
+    "weatherData": [
+      {
+        "city": "Abbiategrasso",
+        "country": "Italy",
+        "state": null,
+        "suburb": null,
+        "date": "2020-01-04",
+        "lat": 45.4009,
+        "long": 8.9185,
+        "population": 32737,
+        "avgTemperature": 2.48,
+        "maxTemperature": 6.73,
+        "minTemperature": null,
+        "precipitation": null,
+        "snowDepth": null,
+        "stationName": "CAMERI",
+        "submitterId": null
+      }
+    ]
+  }
+}
+```
+
+#### 2. Get Weather by Date
+Find weather conditions across all cities for a specific day (e.g., March 15th for vacation planning):
+
+```graphql
+query GetSpringWeather {
+  weatherByDate(monthDay: "0315") {
+    city
+    country
+    avgTemperature
+    maxTemperature
+    minTemperature
+    precipitation
+    population
+  }
+}
+```
+
+**Use Case:** Planning a spring vacation? Check historical weather for March 15th across all available cities.
+
+#### 3. Get Weather by City
+Retrieve all weather records for a specific city throughout the year:
+
+```graphql
+query GetRomeWeather {
+  weatherByCity(city: "Rome") {
+    date
+    avgTemperature
+    maxTemperature
+    minTemperature
+    precipitation
+    snowDepth
+    stationName
+  }
+}
+```
+
+**Use Case:** See Rome's weather patterns throughout the year to pick the best time to visit.
+
+#### 4. Find Warm Winter Destinations
+Combine queries to find cities with pleasant winter weather:
+
+```graphql
+query WarmWinterDestinations {
+  weatherByDate(monthDay: "0115") {
+    city
+    country
+    avgTemperature
+    maxTemperature
+    minTemperature
+    population
+  }
+}
+```
+
+**Tip:** Filter results where `avgTemperature > 15` to find warm destinations in January.
+
+#### 5. Get All Cities
+List all available cities in the database:
+
+```graphql
+query GetAllCities {
+  cities
+}
+```
+
+**Example Response:**
+```json
+{
+  "data": {
+    "cities": [
+      "Abbiategrasso",
+      "Acerra",
+      "Acireale",
+      "Adrano",
+      "Afragola",
+      "..."
+    ]
+  }
+}
+```
+
+#### 6. Get All Countries
+List all available countries:
+
+```graphql
+query GetAllCountries {
+  countries
+}
+```
+
+#### 7. Compare Cities for Vacation Planning
+Get weather data for multiple cities on the same date:
+
+```graphql
+query CompareCities {
+  rome: weatherByCity(city: "Rome") {
+    date
+    avgTemperature
+    precipitation
+  }
+  milan: weatherByCity(city: "Milan") {
+    date
+    avgTemperature
+    precipitation
+  }
+  florence: weatherByCity(city: "Florence") {
+    date
+    avgTemperature
+    precipitation
+  }
+}
+```
+
+**Use Case:** Compare weather patterns between Rome, Milan, and Florence to choose your destination.
+
+#### 8. Find Cities with Specific Weather Conditions
+Get summer weather data to find hot destinations:
+
+```graphql
+query HotSummerDestinations {
+  weatherByDate(monthDay: "0715") {
+    city
+    country
+    avgTemperature
+    maxTemperature
+    precipitation
+    population
+  }
+}
+```
+
+**Tip:** Look for cities where `maxTemperature > 30` for hot summer destinations, or `precipitation < 5` for dry weather.
+
+#### 9. Minimal Query for Quick Checks
+Get just the essential information:
+
+```graphql
+query QuickWeatherCheck {
+  weatherByCity(city: "Venice") {
+    date
+    avgTemperature
+    precipitation
+  }
+}
+```
+
+#### 10. Detailed City Analysis
+Get comprehensive weather data for in-depth analysis:
+
+```graphql
+query DetailedCityAnalysis {
+  weatherByCity(city: "Naples") {
+    date
+    avgTemperature
+    maxTemperature
+    minTemperature
+    precipitation
+    snowDepth
+    stationName
+    lat
+    long
+    population
+  }
+}
+```
+
+**Use Case:** Analyze Naples' complete weather patterns including temperature ranges, precipitation, and even snow depth for winter months.
+
+### GraphQL Schema
+
+The GraphQL API provides a `WeatherData` type with the following fields:
+
+```graphql
+type WeatherData {
+  city: String!
+  country: String
+  state: String
+  suburb: String
+  date: String!
+  lat: Float
+  long: Float
+  population: Float
+  precipitation: Float
+  snowDepth: Float
+  avgTemperature: Float
+  maxTemperature: Float
+  minTemperature: Float
+  stationName: String!
+  submitterId: String
+}
+```
+
+### NPM Scripts
+
+| Command | Description |
+|---------|-------------|
+| `npm run dev` | Start development server with hot reload |
+| `npm run build` | Build TypeScript to JavaScript |
+| `npm start` | Start production server |
+| `npm run generate` | Generate GraphQL schema |
+| `npm run prisma:generate` | Generate Prisma Client |
+| `npm run prisma:migrate` | Run database migrations |
+| `npm run prisma:studio` | Open Prisma Studio (database GUI) |
+| `npm run import-data` | Import weather data from JSON |
+
+### Docker Deployment
+
+The GraphQL server can be run in Docker alongside the Python API:
+
+```bash
+docker-compose up graphql-api
+```
+
+Or run all services:
+```bash
+docker-compose up
+```
+
+Services:
+- **PostgreSQL**: localhost:5431
+- **Python API**: localhost:8000
+- **GraphQL API**: localhost:4001
+
+## 🚀 REST API Endpoints (Legacy)
+
+The Python REST API provides the following endpoints:
 
 ### 1. Root Endpoint
 ```
@@ -158,7 +491,13 @@ POSTGRES_PASSWORD=iwantsun
 make docker
 ```
 
-This will start a PostgreSQL container on port 5432.
+alternatively
+
+```bash
+docker compose build --no-cache
+```
+
+This will start a PostgreSQL container on port 5431. I used 5431 because I often use 5432 as the port for my work's repo, and I like to keep it running.
 
 ### 6. Run Database Migrations
 
@@ -216,7 +555,23 @@ The project includes a Makefile with helpful commands:
 
 ```
 vaycay_v2/
-├── vaycay/                          # Main application package
+├── server/                          # GraphQL API (TypeScript)
+│   ├── src/
+│   │   ├── index.ts                 # Apollo Server entry point
+│   │   ├── schema.ts                # Nexus schema generation
+│   │   ├── context.ts               # GraphQL context (Prisma client)
+│   │   └── graphql/
+│   │       ├── index.ts             # Export all GraphQL types
+│   │       ├── enums.ts             # GraphQL enums
+│   │       └── WeatherData.ts       # Weather data queries & types
+│   ├── prisma/
+│   │   └── schema.prisma            # Prisma database schema
+│   ├── scripts/
+│   │   └── import-data.ts           # Data import utility
+│   ├── Dockerfile                   # GraphQL server container
+│   ├── package.json                 # Node.js dependencies
+│   └── tsconfig.json                # TypeScript configuration
+├── vaycay/                          # Python REST API (Legacy)
 │   ├── main.py                      # FastAPI application and routes
 │   ├── crud/                        # CRUD operations
 │   │   ├── base.py                  # Base CRUD class with query methods
@@ -234,13 +589,14 @@ vaycay_v2/
 │   │   └── config.py                # Configuration settings
 │   └── weather_data/                # Weather data files
 │       └── 16April2024/             # Data snapshot from April 2024
-│           └── datacleaning4_nopopulation_wholeEurope.json
-├── alembic/                         # Database migrations
+│           └── cleaned_weather-data_10000population_Italy.json
+├── alembic/                         # Database migrations (Python)
 ├── tests/                           # Test files
 ├── docker-compose.yml               # Docker services configuration
-├── Dockerfile                       # Application container definition
+├── Dockerfile                       # Python API container definition
 ├── pyproject.toml                   # Poetry dependencies
 ├── Makefile                         # Development commands
+├── MIGRATION_PLAN.md                # Migration roadmap
 └── README.md                        # This file
 ```
 

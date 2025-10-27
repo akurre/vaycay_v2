@@ -1,6 +1,5 @@
 
 
-version: "3"
 
 services:
   db:
@@ -9,7 +8,7 @@ services:
     image: postgres
     restart: always
     ports:
-      - 5432:5432
+      - 5431:5432
     environment:
         POSTGRES_USER: postgres
         POSTGRES_PASSWORD: iwantsun
@@ -20,16 +19,38 @@ services:
     env_file:
       - .env.local
     build: .
-#    command: bash -c "alembic upgrade head && uvicorn vaycay/main:vaycay --host 0.0.0.0 --port 8000 --reload"
+    command: bash -c "sleep 5 && poetry install --no-interaction --no-ansi && alembic upgrade head && uvicorn vaycay.main:app --host 0.0.0.0 --port 8000 --reload"
     environment:
-      - DATABASE_URL=postgresql://postgres:local-password@postgres/postgres
+      - DATABASE_URL=postgresql://postgres:iwantsun@db:5432/postgres
     volumes:
       - .:/vaycay
     ports:
       - 8000:8000
     depends_on:
+      db:
+        condition: service_started
+    restart: on-failure
+
+  graphql-api:
+    container_name: vaycay-graphql
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+    ports:
+      - "4001:4001"
+    environment:
+      - DATABASE_URL=postgresql://postgres:iwantsun@db:5432/postgres
+      - PORT=4001
+      - NODE_ENV=production
+    depends_on:
       - db
-    restart: always
+    restart: on-failure
+    healthcheck:
+      test: ["CMD", "node", "-e", "require('http').get('http://localhost:4001/', (r) => {process.exit(r.statusCode === 200 ? 0 : 1)})"]
+      interval: 30s
+      timeout: 3s
+      retries: 3
+      start_period: 10s
 
   deps:
     image: tianon/true # very small image
