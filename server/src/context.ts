@@ -11,9 +11,11 @@ interface Context {
 }
 
 // Create context for Apollo Server
-export const context: Context = {
+const context: Context = {
   prisma,
 };
+
+export default context;
 
 // Graceful shutdown
 process.on('SIGINT', async () => {

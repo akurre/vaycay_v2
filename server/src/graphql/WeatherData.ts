@@ -1,4 +1,5 @@
 import { objectType, queryField, nonNull, stringArg, intArg, list } from 'nexus';
+import { WeatherData as PrismaWeatherData } from '@prisma/client';
 
 // GraphQL WeatherData type definition
 export const WeatherData = objectType({
@@ -24,7 +25,7 @@ export const WeatherData = objectType({
 });
 
 // Helper function to transform Prisma data to GraphQL format
-function transformWeatherData(data: any) {
+function transformWeatherData(data: PrismaWeatherData) {
   return {
     city: data.city,
     country: data.country,

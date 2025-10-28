@@ -1,0 +1,11 @@
+client:
+  - "client/**"
+
+server:
+  - "server/**"
+
+infra:
+  - ".github/**"
+  - "docker-compose.yml"
+  - "client/Dockerfile"
+  - "server/Dockerfile"

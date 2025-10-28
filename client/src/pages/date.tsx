@@ -4,7 +4,6 @@ import DateEntryForm from '../components/Navigation/dateNavigaton';
 import WorldMap from '../components/Map/WorldMap';
 import { FC } from 'react';
 
-
 const DateWeatherPage: FC = () => {
   const { date } = useParams<{ date: string }>();
   const { dataReturned: weatherData, isError, isLoading } = useWeatherByDate(String(date));
@@ -15,7 +14,7 @@ const DateWeatherPage: FC = () => {
   };
 
   if (isError) return <div>Failed to load weather data. </div>;
-  console.log(isError)
+  console.log(isError);
   if (isLoading || !weatherData) return <div>Loading...</div>;
 
   return (
@@ -23,8 +22,8 @@ const DateWeatherPage: FC = () => {
       <div className="absolute inset-0 flex justify-center items-center z-10">
         <DateEntryForm onSubmit={handleDateSubmit} />
       </div>
-      <div className='border-2 border-solid border-red-500'>
-      <div style={{ height: '95vh', width: '95vw' }}>
+      <div className="border-2 border-solid border-red-500">
+        <div style={{ height: '95vh', width: '95vw' }}>
           <WorldMap cities={weatherData} />
         </div>
       </div>
