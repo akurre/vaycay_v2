@@ -17,7 +17,11 @@ const DateEntryForm: React.FC<DateEntryFormProps> = ({ onSubmit }) => {
 
     for (let i = 1; i <= numberOfDays; i++) {
       const dayFormatted = i.toString().padStart(2, '0');
-      daysOptions.push(<option key={dayFormatted} value={dayFormatted}>{dayFormatted}</option>);
+      daysOptions.push(
+        <option key={dayFormatted} value={dayFormatted}>
+          {dayFormatted}
+        </option>
+      );
     }
 
     return daysOptions;
