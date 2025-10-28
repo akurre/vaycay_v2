@@ -16,5 +16,5 @@ export default defineConfig({
     outDir: 'build',
     sourcemap: true,
   },
-  envPrefix: 'REACT_APP_', // Support existing REACT_APP_ env variables
+  envPrefix: 'VITE_', // Vite standard env variable prefix
 });
