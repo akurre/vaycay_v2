@@ -1,11 +1,11 @@
-import React from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useWeatherByDate } from '../api/dates/useWeatherByDate';
-import DateEntryForm from '../components/dateNavigaton';
-import WorldMap from '../components/WorldMap';
+import DateEntryForm from '../components/Navigation/dateNavigaton';
+import WorldMap from '../components/Map/WorldMap';
+import { FC } from 'react';
 
 
-const DateWeatherPage: React.FC = () => {
+const DateWeatherPage: FC = () => {
   const { date } = useParams<{ date: string }>();
   const { dataReturned: weatherData, isError, isLoading } = useWeatherByDate(String(date));
   const navigate = useNavigate();

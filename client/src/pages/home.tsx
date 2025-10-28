@@ -1,9 +1,9 @@
-import React from 'react';
+import { FC } from 'react';
 import { useNavigate } from 'react-router-dom';
-import DateEntryForm from '../components/dateNavigaton';
+import DateEntryForm from '../components/Navigation/dateNavigaton';
 
 
-const Home: React.FC = () => {
+const Home: FC = () => {
   const navigate = useNavigate();
   const handleDateSubmit = (formattedDate: string) => {
     // Redirect to the new date

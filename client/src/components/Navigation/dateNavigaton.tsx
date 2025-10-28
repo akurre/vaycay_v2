@@ -25,7 +25,7 @@ const DateEntryForm: React.FC<DateEntryFormProps> = ({ onSubmit }) => {
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    const formattedDate = `${month}-${day}`;
+    const formattedDate = `${month}${day}`;
     onSubmit(formattedDate);
     navigate(`/day/${formattedDate}`);
   };

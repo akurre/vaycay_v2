@@ -1,4 +1,4 @@
-import { CityWeatherData } from "../types/cityWeatherDataType";
+import { CityWeatherData } from "../../types/cityWeatherDataType";
 import { Popup } from 'react-leaflet';
 
 interface PopupProps {

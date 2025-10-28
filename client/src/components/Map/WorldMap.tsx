@@ -1,18 +1,15 @@
-import React from 'react';
 import { MapContainer, TileLayer, Marker } from 'react-leaflet';
 import L from 'leaflet'
 import 'leaflet/dist/leaflet.css';
-import markerIconPNG from '../resources/marker-icon.png'
-import markerShadowPNG from '../resources/marker-shadow.png'
-import { CityWeatherData } from '../types/cityWeatherDataType';
+import { CityWeatherData } from '../../types/cityWeatherDataType';
 import MapPopup from './MapPopup';
 
 const markerIcon = L.icon({
     iconSize: [25, 41],
     iconAnchor: [10, 41],
     popupAnchor: [2, -40],
-    iconUrl: markerIconPNG,
-    shadowUrl: markerShadowPNG
+    iconUrl: '/marker-icon.png',
+    shadowUrl: '/marker-shadow.png'
   });
 
 
