@@ -50,9 +50,55 @@ Before setting up the project, ensure you have the following installed:
 - **npm**: Node package manager (comes with Node.js)
 - **Docker & Docker Compose**: For running PostgreSQL database and containerized services
 
-## 🛠️ Installation & Setup
+## 🚀 Quick Start (Recommended)
 
-### Option 1: Docker Compose (Recommended)
+The easiest way to get started is using the provided Makefile:
+
+```bash
+# 1. Install all dependencies
+make install
+
+# 2. Setup database (migrations + data import)
+make db-setup
+
+# 3. Start all services
+make dev
+```
+
+That's it! The application will be running at:
+- **React Frontend**: http://localhost:3000
+- **GraphQL API**: http://localhost:4001
+- **PostgreSQL**: localhost:5431
+
+**To stop all services:**
+```bash
+make clean
+```
+
+**View all available commands:**
+```bash
+make help
+```
+
+### Available Make Commands
+
+| Command | Description |
+|---------|-------------|
+| `make install` | Install all dependencies (client + server) |
+| `make db-setup` | Setup database (migrations + data import) |
+| `make dev` | Start all services for development |
+| `make server-dev` | Run GraphQL server only |
+| `make client-dev` | Run React client only |
+| `make db-start` | Start PostgreSQL database only |
+| `make db-stop` | Stop PostgreSQL database |
+| `make clean` | Stop all services and clean up |
+| `make help` | Show all available commands |
+
+## 🛠️ Manual Installation & Setup
+
+**Note:** If the Makefile commands don't work on your system or you prefer more control over the setup process, you can follow these manual steps.
+
+### Option 1: Docker Compose
 
 The easiest way to run the entire stack:
 
