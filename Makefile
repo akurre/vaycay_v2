@@ -1,4 +1,4 @@
-.PHONY: help install db-setup dev clean db-start db-stop server-dev client-dev check-prereqs lint lint-fix type-check format format-check build
+.PHONY: help install db-setup dev clean db-start db-stop server-dev client-dev check-prereqs lint lint-fix type-check format format-check build prisma delete-package
 
 # Colors for output
 GREEN := \033[0;32m
@@ -30,8 +30,10 @@ help:
 	@echo "  make build        - Build client and server for production"
 	@echo ""
 	@echo "$(YELLOW)Utilities:$(NC)"
-	@echo "  make clean        - Stop all services and clean up"
-	@echo "  make help         - Show this help message"
+	@echo "  make prisma         - Generate Prisma client"
+	@echo "  make delete-package - Delete root node_modules and package-lock.json, then generate Prisma client"
+	@echo "  make clean          - Stop all services and clean up"
+	@echo "  make help           - Show this help message"
 	@echo ""
 
 
@@ -167,6 +169,25 @@ build: check-prereqs
 	@echo "$(YELLOW)Building client...$(NC)"
 	@cd client && npm run build
 	@echo "$(GREEN)✓ Build complete$(NC)"
+
+# Generate Prisma client
+prisma: check-prereqs
+	@echo "$(GREEN)Generating Prisma client...$(NC)"
+	npm run -w server prisma:generate
+	@echo "$(GREEN)✓ Prisma client generated$(NC)"
+
+# Delete root node_modules and package-lock.json, then generate Prisma client
+delete-package: check-prereqs
+	@echo "$(GREEN)Cleaning up root package files...$(NC)"
+	@echo "$(YELLOW)Deleting root node_modules...$(NC)"
+	@rm -rf node_modules
+	@echo "$(YELLOW)Deleting root package-lock.json...$(NC)"
+	@rm -f package-lock.json
+	@echo "$(YELLOW)Reinstalling...$(NC)"
+	npm i
+	@echo "$(YELLOW)Generating Prisma client...$(NC)"
+	npm run -w server prisma:generate
+	@echo "$(GREEN)✓ Package cleanup and Prisma generation complete$(NC)"
 
 # Clean up - stop all services
 clean:
