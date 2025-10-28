@@ -1,4 +1,4 @@
-.PHONY: help install db-setup dev clean db-start db-stop server-dev client-dev check-prereqs lint lint-fix type-check
+.PHONY: help install db-setup dev clean db-start db-stop server-dev client-dev check-prereqs lint lint-fix type-check format format-check build
 
 # Colors for output
 GREEN := \033[0;32m
@@ -24,7 +24,10 @@ help:
 	@echo "$(YELLOW)Code Quality:$(NC)"
 	@echo "  make lint         - Check for ESLint errors in client and server"
 	@echo "  make lint-fix     - Auto-fix ESLint errors in client and server"
+	@echo "  make format       - Format code with Prettier in client and server"
+	@echo "  make format-check - Check code formatting in client and server"
 	@echo "  make type-check   - Check for TypeScript errors in client and server"
+	@echo "  make build        - Build client and server for production"
 	@echo ""
 	@echo "$(YELLOW)Utilities:$(NC)"
 	@echo "  make clean        - Stop all services and clean up"
@@ -140,10 +143,40 @@ type-check: check-prereqs
 	@cd server && npm run type-check || true
 	@echo "$(GREEN)✓ Type check complete$(NC)"
 
+# Format code with Prettier in both client and server
+format: check-prereqs
+	@echo "$(GREEN)Formatting code with Prettier...$(NC)"
+	@echo "$(YELLOW)Formatting client...$(NC)"
+	@cd client && npm run format || true
+	@echo ""
+	@echo "$(YELLOW)Formatting server...$(NC)"
+	@cd server && npm run format || true
+	@echo "$(GREEN)✓ Code formatting complete$(NC)"
+
+# Check code formatting in both client and server
+format-check: check-prereqs
+	@echo "$(GREEN)Checking code formatting...$(NC)"
+	@echo "$(YELLOW)Checking client...$(NC)"
+	@cd client && npm run format:check || true
+	@echo ""
+	@echo "$(YELLOW)Checking server...$(NC)"
+	@cd server && npm run format:check || true
+	@echo "$(GREEN)✓ Format check complete$(NC)"
+
+# Build both client and server for production
+build: check-prereqs
+	@echo "$(GREEN)Building for production...$(NC)"
+	@echo "$(YELLOW)Building server...$(NC)"
+	@cd server && npm run build
+	@echo ""
+	@echo "$(YELLOW)Building client...$(NC)"
+	@cd client && npm run build
+	@echo "$(GREEN)✓ Build complete$(NC)"
+
 # Clean up - stop all services
 clean:
 	@echo "$(YELLOW)Stopping all services...$(NC)"
-	@-pkill -f "ts-node-dev.*src/index.ts" 2>/dev/null || true
-	@-pkill -f "react-scripts start" 2>/dev/null || true
+	@-pkill -f "tsx.*src/index.ts" 2>/dev/null || true
+	@-pkill -f "vite" 2>/dev/null || true
 	docker-compose down
 	@echo "$(GREEN)✓ All services stopped$(NC)"

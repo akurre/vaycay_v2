@@ -44,7 +44,7 @@ async function importData(filePath: string) {
     // Read and parse the JSON file
     const fileContent = readFileSync(filePath, 'utf-8');
     const data: WeatherDataRecord[] = JSON.parse(fileContent);
-    
+
     stats.total = data.length;
     console.log(`📊 Total records to import: ${stats.total}`);
 
@@ -102,7 +102,7 @@ async function importData(filePath: string) {
     }
 
     // Final statistics
-    console.log('\n' + '='.repeat(60));
+    console.log(`\n${'='.repeat(60)}`);
     console.log('📊 Import Complete!');
     console.log('='.repeat(60));
     console.log(`Total records:    ${stats.total}`);
@@ -114,7 +114,6 @@ async function importData(filePath: string) {
     // Verify import
     const count = await prisma.weatherData.count();
     console.log(`\n🗄️  Total records in database: ${count}`);
-
   } catch (error) {
     console.error('❌ Fatal error during import:', error);
     throw error;
@@ -132,7 +131,7 @@ async function main() {
   // Parse command line arguments
   for (const arg of args) {
     if (arg.startsWith('--file=')) {
-      filePath = arg.split('=')[1];
+      [, filePath] = arg.split('=');
     }
   }
 
@@ -148,8 +147,7 @@ async function main() {
   await importData(absolutePath);
 }
 
-main()
-  .catch((error) => {
-    console.error('💥 Import failed:', error);
-    process.exit(1);
-  });
+main().catch((error) => {
+  console.error('💥 Import failed:', error);
+  process.exit(1);
+});
