@@ -21,7 +21,7 @@ jobs:
       server: ${{ steps.filter.outputs.server }}
       shared: ${{ steps.filter.outputs.shared }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - uses: dorny/paths-filter@v3
         id: filter
         with:
@@ -46,8 +46,8 @@ jobs:
       needs.changes.outputs.client == 'true' ||
       needs.changes.outputs.shared == 'true'
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v6
         with:
           node-version: "20.x"
           cache: "npm"
@@ -78,8 +78,8 @@ jobs:
       needs.changes.outputs.server == 'true' ||
       needs.changes.outputs.shared == 'true'
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v6
         with:
           node-version: "20.x"
           cache: "npm"
