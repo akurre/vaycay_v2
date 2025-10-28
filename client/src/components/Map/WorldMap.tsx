@@ -3,13 +3,15 @@ import L from 'leaflet'
 import 'leaflet/dist/leaflet.css';
 import { CityWeatherData } from '../../types/cityWeatherDataType';
 import MapPopup from './MapPopup';
+import markerIconPng from '/marker-icon.png';
+import markerShadowPng from '/marker-shadow.png';
 
 const markerIcon = L.icon({
     iconSize: [25, 41],
     iconAnchor: [10, 41],
     popupAnchor: [2, -40],
-    iconUrl: '/marker-icon.png',
-    shadowUrl: '/marker-shadow.png'
+    iconUrl: markerIconPng,
+    shadowUrl: markerShadowPng
   });
 
 
