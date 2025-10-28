@@ -23,7 +23,7 @@ const DateWeatherPage: FC = () => {
       <div className="absolute inset-0 flex justify-center items-center z-10">
         <DateEntryForm onSubmit={handleDateSubmit} />
       </div>
-      <div className='border border-2 border-solid border-red-500'>
+      <div className='border-2 border-solid border-red-500'>
       <div style={{ height: '95vh', width: '95vw' }}>
           <WorldMap cities={weatherData} />
         </div>

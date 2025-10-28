@@ -1,22 +1,22 @@
-import { CityWeatherData } from "../../types/cityWeatherDataType";
+import { WeatherData } from "../../types/cityWeatherDataType";
 import { Popup } from 'react-leaflet';
 
 interface PopupProps {
-    city: CityWeatherData;
+    city: WeatherData;
 }
 
-const MapPopup = (Props: PopupProps) => {
+const MapPopup = (Props: PopupProps) => { // TODO reformat all this crapola
     return (
-    <Popup>
-        <div className="space-y-1">
-            <h3>{Props.city.city.toLowerCase().replace(/\b\w/g, char => char.toUpperCase())}, {Props.city.country}</h3>
-            {Props.city.TMAX !== null && <p>Max Temp: {Props.city.TMAX.toFixed(1)}&deg;C</p>}
-            {Props.city.TMIN !== null && <p>Min Temp: {Props.city.TMIN.toFixed(1)}&deg;C</p>}
-            {Props.city.TAVG !== null && <p>Average Temp: {Props.city.TAVG.toFixed(1)}&deg;C</p>}
-            {Props.city.PRCP !== null && <p>Precipitation: {Props.city.PRCP}cm</p>}
-            {Props.city.population !== null && <p>Population: {Props.city.population.toLocaleString()}</p>}
-        </div>
-    </Popup>
+        <Popup> 
+            <div className="space-y-1">
+                <h3>{Props.city.city.toLowerCase().replace(/\b\w/g, char => char.toUpperCase())}, {Props.city.country ?? ''}</h3>
+                {Props.city.maxTemperature !== null && <p>Max Temp: {Props.city.maxTemperature.toFixed(1)}&deg;C</p>}
+                {Props.city.minTemperature !== null && <p>Min Temp: {Props.city.minTemperature.toFixed(1)}&deg;C</p>}
+                {Props.city.avgTemperature !== null && <p>Average Temp: {Props.city.avgTemperature.toFixed(1)}&deg;C</p>}
+                {Props.city.precipitation !== null && <p>Precipitation: {Props.city.precipitation}cm</p>}
+                {Props.city.population !== null && <p>Population: {Props.city.population.toLocaleString()}</p>}
+            </div>
+        </Popup>
     )
 }
 
