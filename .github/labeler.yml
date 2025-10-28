@@ -1,15 +1,12 @@
 client:
-  - changed-files:
-    - any-glob-to-any-file: 'client/**'
+  - any-glob-to-any-file: 'client/**'
 
 server:
-  - changed-files:
-    - any-glob-to-any-file: 'server/**'
+  - any-glob-to-any-file: 'server/**'
 
 infra:
-  - changed-files:
-    - any-glob-to-any-file:
-      - '.github/**'
-      - 'docker-compose.yml'
-      - 'client/Dockerfile'
-      - 'server/Dockerfile'
+  - any-glob-to-any-file:
+    - '.github/**'
+    - 'docker-compose.yml'
+    - 'client/Dockerfile'
+    - 'server/Dockerfile'
