@@ -1,4 +1,4 @@
-.PHONY: help install db-setup dev clean db-start db-stop server-dev client-dev check-prereqs
+.PHONY: help install db-setup dev clean db-start db-stop server-dev client-dev check-prereqs lint lint-fix type-check
 
 # Colors for output
 GREEN := \033[0;32m
@@ -20,6 +20,11 @@ help:
 	@echo "  make client-dev   - Run React client only"
 	@echo "  make db-start     - Start PostgreSQL database only"
 	@echo "  make db-stop      - Stop PostgreSQL database"
+	@echo ""
+	@echo "$(YELLOW)Code Quality:$(NC)"
+	@echo "  make lint         - Check for ESLint errors in client and server"
+	@echo "  make lint-fix     - Auto-fix ESLint errors in client and server"
+	@echo "  make type-check   - Check for TypeScript errors in client and server"
 	@echo ""
 	@echo "$(YELLOW)Utilities:$(NC)"
 	@echo "  make clean        - Stop all services and clean up"
@@ -104,6 +109,36 @@ client-dev: check-prereqs
 	@echo "$(YELLOW)Make sure server is running (make server-dev)$(NC)"
 	@echo "$(YELLOW)Client will be available at: http://localhost:3000$(NC)"
 	cd client && npm run dev
+
+# Lint both client and server
+lint: check-prereqs
+	@echo "$(GREEN)Running ESLint checks...$(NC)"
+	@echo "$(YELLOW)Checking client...$(NC)"
+	@cd client && npm run lint || true
+	@echo ""
+	@echo "$(YELLOW)Checking server...$(NC)"
+	@cd server && npm run lint || true
+	@echo "$(GREEN)✓ Lint check complete$(NC)"
+
+# Auto-fix lint errors in both client and server
+lint-fix: check-prereqs
+	@echo "$(GREEN)Auto-fixing ESLint errors...$(NC)"
+	@echo "$(YELLOW)Fixing client...$(NC)"
+	@cd client && npm run lint:fix || true
+	@echo ""
+	@echo "$(YELLOW)Fixing server...$(NC)"
+	@cd server && npm run lint:fix || true
+	@echo "$(GREEN)✓ Auto-fix complete$(NC)"
+
+# Type check both client and server
+type-check: check-prereqs
+	@echo "$(GREEN)Running TypeScript type checks...$(NC)"
+	@echo "$(YELLOW)Checking client...$(NC)"
+	@cd client && npm run type-check || true
+	@echo ""
+	@echo "$(YELLOW)Checking server...$(NC)"
+	@cd server && npm run type-check || true
+	@echo "$(GREEN)✓ Type check complete$(NC)"
 
 # Clean up - stop all services
 clean:

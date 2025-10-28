@@ -91,6 +91,9 @@ make help
 | `make client-dev` | Run React client only |
 | `make db-start` | Start PostgreSQL database only |
 | `make db-stop` | Stop PostgreSQL database |
+| `make lint` | Check for ESLint errors in client and server |
+| `make lint-fix` | Auto-fix ESLint errors in client and server |
+| `make type-check` | Check for TypeScript errors in client and server |
 | `make clean` | Stop all services and clean up |
 | `make help` | Show all available commands |
 
