@@ -1,39 +1,63 @@
-
-
-version: "3"
+version: '3.8'
 
 services:
+  # PostgreSQL Database
   db:
+    platform: linux/x86_64
     container_name: postgres-db
-    image: postgres
+    image: postgres:15-alpine
     restart: always
     ports:
-      - 5432:5432
+      - "5431:5432"
     environment:
-        POSTGRES_USER: postgres
-        POSTGRES_PASSWORD: iwantsun
-        PGDATA: var/lib/postgresql/data/pgdata
-
-  app:
-    container_name: app
-    env_file:
-      - .env.local
-    build: .
-#    command: bash -c "alembic upgrade head && uvicorn app/main:app --host 0.0.0.0 --port 8000 --reload"
-    environment:
-      - DATABASE_URL=postgresql://postgres:local-password@postgres/postgres
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: iwantsun
+      POSTGRES_DB: postgres
+      PGDATA: /var/lib/postgresql/data/pgdata
     volumes:
-      - .:/app
-    ports:
-      - 8000:8000
-    depends_on:
-      - db
-    restart: always
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
-  deps:
-    image: tianon/true # very small image
-    entrypoint: "/true"
-    profiles:
-      - deps
+  # TypeScript GraphQL API
+  graphql-api:
+    container_name: vaycay-graphql
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+    ports:
+      - "4001:4001"
+    environment:
+      DATABASE_URL: postgresql://postgres:iwantsun@db:5432/postgres
+      PORT: 4001
+      NODE_ENV: production
     depends_on:
-      - db
+      db:
+        condition: service_healthy
+    restart: on-failure
+    healthcheck:
+      test: ["CMD", "node", "-e", "require('http').get('http://localhost:4001/', (r) => {process.exit(r.statusCode === 200 ? 0 : 1)})"]
+      interval: 30s
+      timeout: 3s
+      retries: 3
+      start_period: 10s
+
+  # React Frontend
+  frontend:
+    container_name: vaycay-frontend
+    build:
+      context: ./client
+      dockerfile: Dockerfile
+      args:
+        REACT_APP_GRAPHQL_URL: http://graphql-api:4001/graphql
+    ports:
+      - "3000:80"
+    depends_on:
+      - graphql-api
+    restart: on-failure
+
+volumes:
+  postgres_data:
