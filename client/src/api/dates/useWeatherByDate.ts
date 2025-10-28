@@ -2,7 +2,7 @@ import { useQuery } from '@apollo/client/react';
 import { GET_WEATHER_BY_DATE } from '../queries';
 import { WeatherData, WeatherByDateResponse, WeatherByDateVars } from '../../types/cityWeatherDataType';
 
-function useWeatherByDate(date: string) {
+export function useWeatherByDate(date: string) {
   // Remove any dashes from the date format (e.g., "03-03" -> "0303")
   const formattedDate = date ? date.replaceAll('-', '') : '';
   
@@ -19,5 +19,3 @@ function useWeatherByDate(date: string) {
     isError: error,
   };
 }
-
-export default useWeatherByDate;

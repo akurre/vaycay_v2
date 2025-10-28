@@ -18,8 +18,10 @@ module.exports = {
     const joined = clientFiles.map((f) => `"${f}"`).join(' ');
     return [
       // Run using client's local binaries
-      `cd client && eslint --fix ${joined}`,
+      `cd client && eslint --max-warnings=0 --fix ${joined}`,
       `cd client && prettier --write ${joined}`,
+      // Type-check the whole project to catch TS errors not covered by ESLint
+      `cd client && npm run -s type-check`,
     ];
   },
 
@@ -29,8 +31,9 @@ module.exports = {
     if (serverFiles.length === 0) return [];
     const joined = serverFiles.map((f) => `"${f}"`).join(' ');
     return [
-      `cd server && eslint --fix ${joined}`,
+      `cd server && eslint --max-warnings=0 --fix ${joined}`,
       `cd server && prettier --write ${joined}`,
+      `cd server && npm run -s type-check`,
     ];
   },
 };
