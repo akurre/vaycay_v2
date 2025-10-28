@@ -63,7 +63,7 @@ jobs:
         run: npm run -w client build
       - name: Upload client build artifact
         if: github.event_name == 'pull_request'
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: client-dist-${{ github.sha }}
           path: client/dist
