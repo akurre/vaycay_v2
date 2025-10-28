@@ -1,6 +1,6 @@
 # Legacy Python FastAPI Backend
 
-This directory contains the original Python FastAPI backend that has been replaced by the TypeScript GraphQL API.
+This directory contains the original Python FastAPI backend (built basically at the beginning of my career) that has been replaced by the TypeScript GraphQL API.
 
 ## Archive Date
 October 27, 2025
