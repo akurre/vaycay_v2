@@ -446,6 +446,17 @@ This will:
 - Serve it via Nginx on port 3000
 - Connect to the GraphQL API at `graphql-api:4001`
 
+#### Why Nginx?
+
+The production Docker build uses **nginx** as a lightweight, high-performance web server to serve the static React build files. Nginx provides:
+
+- **Efficient Static File Serving**: Much faster than running a Node.js development server
+- **Client-Side Routing Support**: Configured with `try_files $uri $uri/ /index.html` to ensure React Router works correctly - all routes are redirected to `index.html` so the React app can handle routing
+- **Production-Ready**: Industry-standard solution for serving single-page applications
+- **Small Footprint**: The nginx Alpine image is minimal and optimized for containers
+
+The multi-stage Dockerfile builds the React app with Node.js, then copies the static build output to an nginx container, keeping the final image small and secure.
+
 ### Architecture
 
 The frontend uses Apollo Client to communicate with the GraphQL API:
@@ -458,11 +469,41 @@ const apolloClient = new ApolloClient({
 });
 ```
 
+### Frontend Structure
+
+The client follows a standard React project structure organized by feature:
+
+```
+client/src/
+├── pages/              # Route components (home, date)
+├── components/         # Reusable components
+│   ├── Map/           # Map visualization (WorldMap, MapPopup)
+│   ├── Navigation/    # Navigation components (dateNavigaton)
+│   ├── Weather/       # Weather-specific components (future)
+│   └── Shared/        # Shared UI components (future)
+├── api/               # GraphQL integration
+│   ├── apolloClient.ts
+│   ├── queries.ts
+│   └── dates/         # Date-specific hooks (useWeatherByDate)
+├── types/             # TypeScript type definitions
+├── hooks/             # Custom React hooks (future)
+├── stores/            # State management (future)
+├── utils/             # Utility functions (future)
+└── contexts/          # React Context providers (future)
+```
+
+**Key Technologies:**
+- **Styling**: Tailwind CSS (utility-first, no traditional CSS files)
+- **TypeScript**: Full type safety with path aliases configured
+- **React Router**: Client-side routing
+- **Apollo Client**: GraphQL data fetching with caching
+- **React Leaflet**: Interactive map visualization
+
 **Key Components:**
 - `client/src/pages/date.tsx` - Main weather map page
-- `client/src/components/WorldMap.tsx` - Leaflet map component
-- `client/src/components/MapPopup.tsx` - Weather data popup
-- `client/src/components/dateNavigaton.tsx` - Date selection form
+- `client/src/components/Map/WorldMap.tsx` - Leaflet map component
+- `client/src/components/Map/MapPopup.tsx` - Weather data popup
+- `client/src/components/Navigation/dateNavigaton.tsx` - Date selection form
 - `client/src/api/dates/useWeatherByDate.ts` - GraphQL hook for fetching weather data
 
 ### GraphQL Integration
