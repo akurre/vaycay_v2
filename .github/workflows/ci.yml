@@ -51,7 +51,9 @@ jobs:
         with:
           node-version: "20.x"
       - name: Install dependencies (workspace)
-        run: npm install --frozen-lockfile
+        run: |
+          npm install --frozen-lockfile
+          npm install --no-save @rollup/rollup-linux-x64-gnu
       - name: Prettier check
         run: npm run -w client format:check
       - name: ESLint
@@ -82,7 +84,9 @@ jobs:
         with:
           node-version: "20.x"
       - name: Install dependencies (workspace)
-        run: npm install --frozen-lockfile
+        run: |
+          npm install --frozen-lockfile
+          npm install --no-save @rollup/rollup-linux-x64-gnu
       - name: Prisma generate (ensure client/types)
         run: npm run -w server prisma:generate
       - name: Prettier check
