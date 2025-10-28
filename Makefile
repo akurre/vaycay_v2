@@ -183,6 +183,8 @@ delete-package: check-prereqs
 	@rm -rf node_modules
 	@echo "$(YELLOW)Deleting root package-lock.json...$(NC)"
 	@rm -f package-lock.json
+	@echo "$(YELLOW)Reinstalling...$(NC)"
+	npm i
 	@echo "$(YELLOW)Generating Prisma client...$(NC)"
 	npm run -w server prisma:generate
 	@echo "$(GREEN)✓ Package cleanup and Prisma generation complete$(NC)"
