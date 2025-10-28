@@ -1,0 +1,18 @@
+# Fail fast on first error
+set -e
+
+# Optional: full-project type checks (fast and deterministic). Comment out if you prefer speed.
+npm run -w client -s type-check
+npm run -w server -s type-check
+
+# Lint/format staged files and run per-workspace type checks for changed files
+npx lint-staged
+
+# # Optional: run knip (can be slow). Default ON; set RUN_KNIP=0 to disable.
+# if [ "${RUN_KNIP:-1}" != "0" ]; then
+#   if npx knip --version >/dev/null 2>&1; then
+#     npx knip
+#   else
+#     echo "[pre-commit] knip unavailable or failed to load (oxc-resolver native binding). Skipping; run 'npx knip' manually or in CI."
+#   fi
+# fi
