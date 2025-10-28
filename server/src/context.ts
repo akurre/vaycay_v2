@@ -6,7 +6,7 @@ const prisma = new PrismaClient({
 });
 
 // Context interface for GraphQL resolvers
-export interface Context {
+interface Context {
   prisma: PrismaClient;
 }
 
