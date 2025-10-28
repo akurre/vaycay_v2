@@ -10,10 +10,10 @@ NC := \033[0m # No Color
 help:
 	@echo "$(GREEN)Vaycay v2 - Available Make Commands$(NC)"
 	@echo ""
-	@echo "$(YELLOW)Quick Setup (First Time):$(NC)"
-	@echo "  make install      - Install all dependencies (client + server)"
-	@echo "  make db-setup     - Setup database (migrations + data import)"
-	@echo "  make dev          - Start all services for development"
+	@echo "$(GREEN)Typical First-Time Setup:$(NC)"
+	@echo "  1. make install"
+	@echo "  2. make db-setup"
+	@echo "  3. make dev"
 	@echo ""
 	@echo "$(YELLOW)Individual Services:$(NC)"
 	@echo "  make server-dev   - Run GraphQL server only"
@@ -33,10 +33,7 @@ help:
 	@echo "  make clean        - Stop all services and clean up"
 	@echo "  make help         - Show this help message"
 	@echo ""
-	@echo "$(GREEN)Typical First-Time Setup:$(NC)"
-	@echo "  1. make install"
-	@echo "  2. make db-setup"
-	@echo "  3. make dev"
+
 
 # Check for required tools
 check-prereqs:
