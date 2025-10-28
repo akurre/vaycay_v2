@@ -52,7 +52,7 @@ jobs:
           node-version: "20.x"
           cache: "npm"
       - name: Install dependencies (workspace)
-        run: npm ci --include=optional
+        run: npm ci
       - name: Prettier check
         run: npm run -w client format:check
       - name: ESLint
@@ -84,7 +84,7 @@ jobs:
           node-version: "20.x"
           cache: "npm"
       - name: Install dependencies (workspace)
-        run: npm ci --include=optional
+        run: npm ci
       - name: Prisma generate (ensure client/types)
         run: npm run -w server prisma:generate
       - name: Prettier check
