@@ -1,4 +1,4 @@
-.PHONY: help install db-setup dev clean db-start db-stop server-dev client-dev check-prereqs
+.PHONY: help install db-setup dev clean db-start db-stop server-dev client-dev check-prereqs lint lint-fix type-check format format-check build
 
 # Colors for output
 GREEN := \033[0;32m
@@ -10,10 +10,10 @@ NC := \033[0m # No Color
 help:
 	@echo "$(GREEN)Vaycay v2 - Available Make Commands$(NC)"
 	@echo ""
-	@echo "$(YELLOW)Quick Setup (First Time):$(NC)"
-	@echo "  make install      - Install all dependencies (client + server)"
-	@echo "  make db-setup     - Setup database (migrations + data import)"
-	@echo "  make dev          - Start all services for development"
+	@echo "$(GREEN)Typical First-Time Setup:$(NC)"
+	@echo "  1. make install"
+	@echo "  2. make db-setup"
+	@echo "  3. make dev"
 	@echo ""
 	@echo "$(YELLOW)Individual Services:$(NC)"
 	@echo "  make server-dev   - Run GraphQL server only"
@@ -21,14 +21,19 @@ help:
 	@echo "  make db-start     - Start PostgreSQL database only"
 	@echo "  make db-stop      - Stop PostgreSQL database"
 	@echo ""
+	@echo "$(YELLOW)Code Quality:$(NC)"
+	@echo "  make lint         - Check for ESLint errors in client and server"
+	@echo "  make lint-fix     - Auto-fix ESLint errors in client and server"
+	@echo "  make format       - Format code with Prettier in client and server"
+	@echo "  make format-check - Check code formatting in client and server"
+	@echo "  make type-check   - Check for TypeScript errors in client and server"
+	@echo "  make build        - Build client and server for production"
+	@echo ""
 	@echo "$(YELLOW)Utilities:$(NC)"
 	@echo "  make clean        - Stop all services and clean up"
 	@echo "  make help         - Show this help message"
 	@echo ""
-	@echo "$(GREEN)Typical First-Time Setup:$(NC)"
-	@echo "  1. make install"
-	@echo "  2. make db-setup"
-	@echo "  3. make dev"
+
 
 # Check for required tools
 check-prereqs:
@@ -51,7 +56,7 @@ install: check-prereqs
 db-setup: check-prereqs
 	@echo "$(GREEN)Setting up database...$(NC)"
 	@echo "$(YELLOW)Starting PostgreSQL...$(NC)"
-	docker-compose up -d db
+	docker compose up -d db
 	@echo "$(YELLOW)Waiting for database to be ready...$(NC)"
 	@sleep 5
 	@echo "$(YELLOW)Running Prisma migrations...$(NC)"
@@ -65,9 +70,7 @@ db-setup: check-prereqs
 # Start all services for development
 dev: check-prereqs
 	@echo "$(GREEN)Starting all services...$(NC)"
-	@echo "$(YELLOW)Starting database...$(NC)"
-	@docker-compose up -d db
-	@sleep 3
+	@echo "$(YELLOW)Make sure database is running (make db-start if needed)$(NC)"
 	@echo "$(YELLOW)Starting GraphQL server...$(NC)"
 	@echo "$(YELLOW)Server will be available at: http://localhost:4001$(NC)"
 	@cd server && npm run dev &
@@ -82,13 +85,13 @@ dev: check-prereqs
 # Start database only
 db-start: check-prereqs
 	@echo "$(GREEN)Starting PostgreSQL database...$(NC)"
-	docker-compose up -d db
+	docker compose up -d db
 	@echo "$(GREEN)✓ Database started at localhost:5431$(NC)"
 
 # Stop database
 db-stop:
 	@echo "$(YELLOW)Stopping PostgreSQL database...$(NC)"
-	docker-compose stop db
+	docker compose stop db
 	@echo "$(GREEN)✓ Database stopped$(NC)"
 
 # Run server only
@@ -105,10 +108,73 @@ client-dev: check-prereqs
 	@echo "$(YELLOW)Client will be available at: http://localhost:3000$(NC)"
 	cd client && npm run dev
 
+# Lint both client and server
+lint: check-prereqs
+	@echo "$(GREEN)Running ESLint checks...$(NC)"
+	@echo "$(YELLOW)Checking client...$(NC)"
+	@cd client && npm run lint || true
+	@echo ""
+	@echo "$(YELLOW)Checking server...$(NC)"
+	@cd server && npm run lint || true
+	@echo "$(GREEN)✓ Lint check complete$(NC)"
+
+# Auto-fix lint errors in both client and server
+lint-fix: check-prereqs
+	@echo "$(GREEN)Auto-fixing ESLint errors...$(NC)"
+	@echo "$(YELLOW)Fixing client...$(NC)"
+	@cd client && npm run lint:fix || true
+	@echo ""
+	@echo "$(YELLOW)Fixing server...$(NC)"
+	@cd server && npm run lint:fix || true
+	@echo "$(GREEN)✓ Auto-fix complete$(NC)"
+
+# Type check both client and server
+type-check: check-prereqs
+	@echo "$(GREEN)Running TypeScript type checks...$(NC)"
+	@echo "$(YELLOW)Checking client...$(NC)"
+	@cd client && npm run type-check || true
+	@echo ""
+	@echo "$(YELLOW)Checking server...$(NC)"
+	@cd server && npm run type-check || true
+	@echo "$(GREEN)✓ Type check complete$(NC)"
+
+# Format code with Prettier in both client and server
+format: check-prereqs
+	@echo "$(GREEN)Formatting code with Prettier...$(NC)"
+	@echo "$(YELLOW)Formatting client...$(NC)"
+	@cd client && npm run format || true
+	@echo ""
+	@echo "$(YELLOW)Formatting server...$(NC)"
+	@cd server && npm run format || true
+	@echo "$(GREEN)✓ Code formatting complete$(NC)"
+
+# Check code formatting in both client and server
+format-check: check-prereqs
+	@echo "$(GREEN)Checking code formatting...$(NC)"
+	@echo "$(YELLOW)Checking client...$(NC)"
+	@cd client && npm run format:check || true
+	@echo ""
+	@echo "$(YELLOW)Checking server...$(NC)"
+	@cd server && npm run format:check || true
+	@echo "$(GREEN)✓ Format check complete$(NC)"
+
+# Build both client and server for production
+build: check-prereqs
+	@echo "$(GREEN)Building for production...$(NC)"
+	@echo "$(YELLOW)Building server...$(NC)"
+	@cd server && npm run build
+	@echo ""
+	@echo "$(YELLOW)Building client...$(NC)"
+	@cd client && npm run build
+	@echo "$(GREEN)✓ Build complete$(NC)"
+
 # Clean up - stop all services
 clean:
 	@echo "$(YELLOW)Stopping all services...$(NC)"
-	@-pkill -f "ts-node-dev.*src/index.ts" 2>/dev/null || true
-	@-pkill -f "react-scripts start" 2>/dev/null || true
-	docker-compose down
+	@echo "$(YELLOW)Stopping Node.js processes...$(NC)"
+	@-pkill -f "tsx watch src/index.ts" 2>/dev/null || true
+	@-pkill -f "vite.*client" 2>/dev/null || true
+	@sleep 2
+	@echo "$(YELLOW)Stopping Docker containers...$(NC)"
+	@docker compose down
 	@echo "$(GREEN)✓ All services stopped$(NC)"

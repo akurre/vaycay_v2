@@ -2,6 +2,8 @@
 
 **Vaycay v2** is a weather data API platform providing historical average weather data for locations worldwide. The system uses a modern TypeScript GraphQL API with a React frontend, enabling users to query weather statistics for specific dates or cities to help with vacation planning based on historical weather patterns.
 
+Why, you might ask, did I use GraphQL? Well, this project was built with Python FastAPI in the very start of my programming career, and honestly, I just wanted to practice with a different framework. I am still fresh at GraphQL and need it for a project, so this is my way of getting in touch with it. 
+
 ## 🎯 Project Goal
 
 Provide access to historical average weather data for any given location and day of the year. Users can query weather metrics including temperature (average, min, max), precipitation, and snow depth for cities around the world.
@@ -91,6 +93,9 @@ make help
 | `make client-dev` | Run React client only |
 | `make db-start` | Start PostgreSQL database only |
 | `make db-stop` | Stop PostgreSQL database |
+| `make lint` | Check for ESLint errors in client and server |
+| `make lint-fix` | Auto-fix ESLint errors in client and server |
+| `make type-check` | Check for TypeScript errors in client and server |
 | `make clean` | Stop all services and clean up |
 | `make help` | Show all available commands |
 

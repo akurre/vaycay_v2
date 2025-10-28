@@ -1,7 +1,7 @@
 import { ApolloServer } from '@apollo/server';
 import { startStandaloneServer } from '@apollo/server/standalone';
 import { config } from 'dotenv';
-import { schema } from './schema';
+import schema from './schema';
 import { context } from './context';
 
 // Load environment variables

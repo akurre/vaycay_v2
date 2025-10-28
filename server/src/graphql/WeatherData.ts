@@ -57,7 +57,7 @@ export const weatherDataQuery = queryField('weatherData', {
       take: args.limit || 10,
       skip: args.offset || 0,
     });
-    
+
     return data.map(transformWeatherData);
   },
 });
@@ -74,12 +74,12 @@ export const weatherByDateQuery = queryField('weatherByDate', {
     const month = args.monthDay.slice(0, 2);
     const day = args.monthDay.slice(2);
     const dateStr = `2020-${month}-${day}`;
-    
+
     const data = await context.prisma.weatherData.findMany({
       where: { date: dateStr },
       take: 100,
     });
-    
+
     return data.map(transformWeatherData);
   },
 });
@@ -94,12 +94,12 @@ export const weatherByCityQuery = queryField('weatherByCity', {
   async resolve(_parent, args, context) {
     // Title case the city name (matching Python API logic)
     const cityName = args.city.charAt(0).toUpperCase() + args.city.slice(1).toLowerCase();
-    
+
     const data = await context.prisma.weatherData.findMany({
       where: { city: cityName },
       take: 100,
     });
-    
+
     return data.map(transformWeatherData);
   },
 });
@@ -114,7 +114,7 @@ export const citiesQuery = queryField('cities', {
       select: { city: true },
       orderBy: { city: 'asc' },
     });
-    
+
     return cities.map((c: { city: string }) => c.city);
   },
 });
@@ -130,7 +130,7 @@ export const countriesQuery = queryField('countries', {
       where: { country: { not: null } },
       orderBy: { country: 'asc' },
     });
-    
+
     return countries.map((c: { country: string | null }) => c.country).filter(Boolean) as string[];
   },
 });

@@ -4,15 +4,20 @@
   "description": "GraphQL API for Vaycay weather data",
   "main": "dist/index.js",
   "scripts": {
-    "dev": "ts-node-dev --respawn --transpile-only src/index.ts",
+    "dev": "tsx watch src/index.ts",
     "build": "tsc",
     "start": "node dist/index.js",
-    "generate": "ts-node src/schema.ts",
+    "generate": "tsx src/schema.ts",
     "prisma:generate": "prisma generate",
     "prisma:migrate": "prisma migrate dev",
     "prisma:studio": "prisma studio",
     "prisma:pull": "prisma db pull",
-    "import-data": "ts-node scripts/import-data.ts"
+    "import-data": "tsx scripts/import-data.ts",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "format": "prettier --write \"src/**/*.ts\" \"scripts/**/*.ts\"",
+    "format:check": "prettier --check \"src/**/*.ts\" \"scripts/**/*.ts\"",
+    "type-check": "tsc --noEmit"
   },
   "keywords": [
     "graphql",
@@ -23,18 +28,30 @@
   ],
   "author": "Ashlen Kurre",
   "license": "ISC",
+  "type": "commonjs",
+  "engines": {
+    "node": ">=20.0.0",
+    "npm": ">=10.0.0"
+  },
   "dependencies": {
-    "@apollo/server": "^4.10.0",
-    "@prisma/client": "^5.9.0",
-    "graphql": "^16.8.1",
-    "nexus": "^1.3.0",
-    "dotenv": "^16.4.1"
+    "@apollo/server": "^4.11.2",
+    "@prisma/client": "^5.22.0",
+    "dotenv": "^16.4.7",
+    "graphql": "^16.9.0",
+    "nexus": "^1.3.0"
   },
   "devDependencies": {
-    "@types/node": "^20.11.5",
-    "prisma": "^5.9.0",
+    "@eslint/js": "^9.15.0",
+    "@types/node": "^22.10.1",
+    "eslint": "^9.15.0",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-import": "^2.31.0",
+    "globals": "^15.12.0",
+    "prettier": "^3.4.2",
+    "prisma": "^5.22.0",
     "ts-node": "^10.9.2",
-    "ts-node-dev": "^2.0.0",
-    "typescript": "^5.3.3"
+    "tsx": "^4.19.2",
+    "typescript": "^5.7.2",
+    "typescript-eslint": "^8.15.0"
   }
 }
