@@ -1,0 +1,23 @@
+{
+  "name": "vaycay_v2",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Vaycay weather application with client and server",
+  "scripts": {
+    "prepare": "husky"
+  },
+  "devDependencies": {
+    "husky": "^9.0.11",
+    "lint-staged": "^15.2.0"
+  },
+  "lint-staged": {
+    "client/**/*.{ts,tsx}": [
+      "cd client && npm run lint:fix",
+      "cd client && npm run format"
+    ],
+    "server/**/*.ts": [
+      "cd server && npm run lint:fix",
+      "cd server && npm run format"
+    ]
+  }
+}
