@@ -1,6 +1,6 @@
 import { PrismaClient } from '@prisma/client';
-import { readFileSync } from 'fs';
-import { resolve } from 'path';
+import { readFileSync } from 'node:fs';
+import { resolve } from 'node:path';
 
 const prisma = new PrismaClient();
 
@@ -126,7 +126,7 @@ async function importData(filePath: string) {
 async function main() {
   // Get file path from command line args or use default
   const args = process.argv.slice(2);
-  let filePath = 'vaycay/weather_data/16April2024/cleaned_weather-data_10000population_Italy.json';
+  let filePath = 'dataAndUtils/legacy/weather_data/cleaned_weather-data_10000population_Italy.json';
 
   // Parse command line arguments
   for (const arg of args) {

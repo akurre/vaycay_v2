@@ -171,7 +171,10 @@ build: check-prereqs
 # Clean up - stop all services
 clean:
 	@echo "$(YELLOW)Stopping all services...$(NC)"
-	@-pkill -f "tsx.*src/index.ts" 2>/dev/null || true
-	@-pkill -f "vite" 2>/dev/null || true
-	docker compose down
+	@echo "$(YELLOW)Stopping Node.js processes...$(NC)"
+	@-pkill -f "tsx watch src/index.ts" 2>/dev/null || true
+	@-pkill -f "vite.*client" 2>/dev/null || true
+	@sleep 2
+	@echo "$(YELLOW)Stopping Docker containers...$(NC)"
+	@docker compose down
 	@echo "$(GREEN)✓ All services stopped$(NC)"
