@@ -56,7 +56,7 @@ install: check-prereqs
 db-setup: check-prereqs
 	@echo "$(GREEN)Setting up database...$(NC)"
 	@echo "$(YELLOW)Starting PostgreSQL...$(NC)"
-	docker-compose up -d db
+	docker compose up -d db
 	@echo "$(YELLOW)Waiting for database to be ready...$(NC)"
 	@sleep 5
 	@echo "$(YELLOW)Running Prisma migrations...$(NC)"
@@ -70,9 +70,7 @@ db-setup: check-prereqs
 # Start all services for development
 dev: check-prereqs
 	@echo "$(GREEN)Starting all services...$(NC)"
-	@echo "$(YELLOW)Starting database...$(NC)"
-	@docker-compose up -d db
-	@sleep 3
+	@echo "$(YELLOW)Make sure database is running (make db-start if needed)$(NC)"
 	@echo "$(YELLOW)Starting GraphQL server...$(NC)"
 	@echo "$(YELLOW)Server will be available at: http://localhost:4001$(NC)"
 	@cd server && npm run dev &
@@ -87,13 +85,13 @@ dev: check-prereqs
 # Start database only
 db-start: check-prereqs
 	@echo "$(GREEN)Starting PostgreSQL database...$(NC)"
-	docker-compose up -d db
+	docker compose up -d db
 	@echo "$(GREEN)✓ Database started at localhost:5431$(NC)"
 
 # Stop database
 db-stop:
 	@echo "$(YELLOW)Stopping PostgreSQL database...$(NC)"
-	docker-compose stop db
+	docker compose stop db
 	@echo "$(GREEN)✓ Database stopped$(NC)"
 
 # Run server only
@@ -175,5 +173,5 @@ clean:
 	@echo "$(YELLOW)Stopping all services...$(NC)"
 	@-pkill -f "tsx.*src/index.ts" 2>/dev/null || true
 	@-pkill -f "vite" 2>/dev/null || true
-	docker-compose down
+	docker compose down
 	@echo "$(GREEN)✓ All services stopped$(NC)"
