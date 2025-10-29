@@ -1,24 +1,173 @@
-import { MapContainer, TileLayer, Marker } from 'react-leaflet';
-import 'leaflet/dist/leaflet.css';
+import { useState, useMemo } from 'react';
+import DeckGL from '@deck.gl/react';
+import { HeatmapLayer } from '@deck.gl/aggregation-layers';
+import { ScatterplotLayer } from '@deck.gl/layers';
+import Map from 'react-map-gl/maplibre';
+import { Button } from '@mantine/core';
+import type { MapViewState, PickingInfo } from '@deck.gl/core';
 import { WeatherData } from '../../types/cityWeatherDataType';
-import MapPopup from './MapPopup';
-import markerIcon from './utils/markerIcon';
-import { hasCoords } from './utils/hasCoords';
+import { transformToHeatmapData } from './utils/transformToHeatmapData';
+import { getTooltipContent } from './utils/getTooltipContent';
+import 'maplibre-gl/dist/maplibre-gl.css';
+
+const INITIAL_VIEW_STATE: MapViewState = {
+  longitude: 0,
+  latitude: 20,
+  zoom: 2,
+  pitch: 0,
+  bearing: 0,
+};
+
+// Temperature color gradient: blue (cold) -> cyan -> green -> yellow -> orange -> red (hot)
+const COLOR_RANGE: [number, number, number][] = [
+  [0, 0, 255],      // Blue: coldest
+  [0, 128, 255],    // Light blue
+  [0, 255, 255],    // Cyan
+  [0, 255, 128],    // Cyan-green
+  [128, 255, 0],    // Yellow-green
+  [255, 255, 0],    // Yellow
+  [255, 128, 0],    // Orange
+  [255, 0, 0],      // Red: hottest
+];
+
+type ViewMode = 'heatmap' | 'markers';
 
 function WorldMap({ cities }: { cities: WeatherData[] }) {
+  const [viewMode, setViewMode] = useState<ViewMode>('heatmap');
+  const [hoverInfo, setHoverInfo] = useState<{
+    x: number;
+    y: number;
+    content: string;
+  } | null>(null);
+
+  const heatmapData = useMemo(() => transformToHeatmapData(cities), [cities]);
+
+  // Get temperature range for marker coloring
+  const { minTemp, maxTemp } = useMemo(() => {
+    const temps = cities
+      .filter((c) => c.avgTemperature !== null)
+      .map((c) => c.avgTemperature!);
+    return {
+      minTemp: Math.min(...temps),
+      maxTemp: Math.max(...temps),
+    };
+  }, [cities]);
+
+  const getMarkerColor = (temp: number): [number, number, number] => {
+    if (maxTemp === minTemp) return [128, 128, 128];
+    const normalized = (temp - minTemp) / (maxTemp - minTemp);
+    const colorIndex = Math.floor(normalized * (COLOR_RANGE.length - 1));
+    return COLOR_RANGE[Math.min(colorIndex, COLOR_RANGE.length - 1)];
+  };
+
+  const layers = [
+    viewMode === 'heatmap'
+      ? new HeatmapLayer({
+          id: 'temperature-heatmap',
+          data: heatmapData,
+          getPosition: (d) => d.position,
+          getWeight: (d) => d.weight,
+          radiusPixels: 40,
+          intensity: 0.5,
+          threshold: 0.03,
+          colorRange: COLOR_RANGE,
+          aggregation: 'MEAN',
+          opacity: 0.6,
+        })
+      : new ScatterplotLayer({
+          id: 'city-markers',
+          data: cities.filter(
+            (c) => c.lat !== null && c.long !== null && c.avgTemperature !== null
+          ),
+          getPosition: (d) => [d.long!, d.lat!],
+          getFillColor: (d) => getMarkerColor(d.avgTemperature!),
+          getRadius: 50000,
+          radiusMinPixels: 3,
+          radiusMaxPixels: 8,
+          pickable: true,
+          opacity: 0.8,
+        }),
+  ];
+
+  const handleHover = (info: PickingInfo) => {
+    if (viewMode === 'markers' && info.object) {
+      const city = info.object as WeatherData;
+      setHoverInfo({
+        x: info.x,
+        y: info.y,
+        content: getTooltipContent([city], city.long!, city.lat!)!,
+      });
+    } else if (viewMode === 'heatmap' && info.coordinate) {
+      const [longitude, latitude] = info.coordinate;
+      const content = getTooltipContent(cities, longitude, latitude);
+      if (content) {
+        setHoverInfo({
+          x: info.x,
+          y: info.y,
+          content,
+        });
+      } else {
+        setHoverInfo(null);
+      }
+    } else {
+      setHoverInfo(null);
+    }
+  };
+
   return (
-    <MapContainer center={[15, 0]} zoom={3} style={{ height: '100%' }}>
-      <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
-      {cities.filter(hasCoords).map((city, index) => (
-        <Marker
-          key={index} // TODO dont include index in key
-          position={[city.lat, city.long]}
-          icon={markerIcon}
+    <div className="relative h-full w-full">
+      <DeckGL
+        initialViewState={INITIAL_VIEW_STATE}
+        controller={{
+          dragPan: true,
+          dragRotate: false,
+          scrollZoom: true,
+          touchZoom: true,
+          touchRotate: false,
+          keyboard: true,
+          doubleClickZoom: true,
+        }}
+        layers={layers}
+        onHover={handleHover}
+        getTooltip={() => null}
+      >
+        <Map
+          mapStyle="https://basemaps.cartocdn.com/gl/dark-matter-gl-style/style.json"
+          attributionControl={false}
+        />
+      </DeckGL>
+
+      {/* View Toggle */}
+      <div className="absolute left-4 top-4 z-10 flex gap-2">
+        <Button
+          size="sm"
+          variant={viewMode === 'heatmap' ? 'filled' : 'outline'}
+          onClick={() => setViewMode('heatmap')}
         >
-          <MapPopup city={city} />
-        </Marker>
-      ))}
-    </MapContainer>
+          Heatmap
+        </Button>
+        <Button
+          size="sm"
+          variant={viewMode === 'markers' ? 'filled' : 'outline'}
+          onClick={() => setViewMode('markers')}
+        >
+          Markers
+        </Button>
+      </div>
+
+      {/* Tooltip */}
+      {hoverInfo && (
+        <div
+          className="pointer-events-none absolute z-10 rounded bg-gray-900 px-3 py-2 text-sm text-white shadow-lg"
+          style={{
+            left: hoverInfo.x + 10,
+            top: hoverInfo.y + 10,
+          }}
+        >
+          {hoverInfo.content}
+        </div>
+      )}
+    </div>
   );
 }
 
