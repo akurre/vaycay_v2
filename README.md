@@ -6,6 +6,8 @@
 
 Why, you might ask, did I use GraphQL? Honestly, I just wanted to practice with a different framework. I am still fresh at GraphQL and need it for a project, so this is my way of getting in touch with it. 
 
+Another note: the data takes like 8000 years to clean/process as I'm working with free APIs with rate limits, so I only have data for Italy included at the moment. More coming later.
+
 ## 🎯 Project Goal
 
 I want to be able to, in the cold dark of the German winters, look on a map at the warmest and closest place I can go with 20 degrees or above. I guess others can relate! 
