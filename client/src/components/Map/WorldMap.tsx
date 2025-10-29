@@ -3,7 +3,6 @@ import DeckGL from '@deck.gl/react';
 import { HeatmapLayer } from '@deck.gl/aggregation-layers';
 import { ScatterplotLayer } from '@deck.gl/layers';
 import Map from 'react-map-gl/maplibre';
-import { Button } from '@mantine/core';
 import type { MapViewState, PickingInfo } from '@deck.gl/core';
 import { WeatherData } from '../../types/cityWeatherDataType';
 import { transformToHeatmapData } from './utils/transformToHeatmapData';
@@ -31,10 +30,14 @@ const COLOR_RANGE: [number, number, number][] = [
   [255, 0, 0],      // Red: hottest
 ];
 
-type ViewMode = 'heatmap' | 'markers';
+export type ViewMode = 'heatmap' | 'markers';
 
-function WorldMap({ cities }: { cities: WeatherData[] }) {
-  const [viewMode, setViewMode] = useState<ViewMode>('heatmap');
+interface WorldMapProps {
+  cities: WeatherData[];
+  viewMode: ViewMode;
+}
+
+function WorldMap({ cities, viewMode }: WorldMapProps) {
   const [selectedCity, setSelectedCity] = useState<WeatherData | null>(null);
   const [hoverInfo, setHoverInfo] = useState<{
     x: number;
@@ -157,24 +160,6 @@ function WorldMap({ cities }: { cities: WeatherData[] }) {
           attributionControl={false}
         />
       </DeckGL>
-
-      {/* View Toggle */}
-      <div className="absolute left-4 top-4 z-10 flex gap-2">
-        <Button
-          size="sm"
-          variant={viewMode === 'heatmap' ? 'filled' : 'outline'}
-          onClick={() => setViewMode('heatmap')}
-        >
-          Heatmap
-        </Button>
-        <Button
-          size="sm"
-          variant={viewMode === 'markers' ? 'filled' : 'outline'}
-          onClick={() => setViewMode('markers')}
-        >
-          Markers
-        </Button>
-      </div>
 
       {/* Tooltip */}
       {hoverInfo && (

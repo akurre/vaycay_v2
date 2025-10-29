@@ -38,8 +38,7 @@ const DateEntryForm: React.FC<DateEntryFormProps> = ({ onSubmit, currentDate }) 
 
   return (
     <form onSubmit={handleSubmit}>
-      <div className="flex flex-col mt-md gap-2">
-        
+      <div className="flex flex-col gap-2">
         <Select
           placeholder={getMonthLabel(month)}
           data={monthOptions}

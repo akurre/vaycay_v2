@@ -1,14 +1,17 @@
 import { useNavigate, useParams } from 'react-router-dom';
 import { useWeatherByDate } from '../api/dates/useWeatherByDate';
 import DateEntryForm from '../components/Navigation/dateNavigaton';
-import WorldMap from '../components/Map/WorldMap';
-import { FC } from 'react';
-import { Loader, Alert } from '@mantine/core';
+import WorldMap, { ViewMode } from '../components/Map/WorldMap';
+import MapViewToggle from '../components/Map/MapViewToggle';
+import { FC, useState } from 'react';
+import { Loader, Alert, Divider } from '@mantine/core';
 
 const DateWeatherPage: FC = () => {
   const { date } = useParams<{ date: string }>();
   const { dataReturned: weatherData, isError, isLoading } = useWeatherByDate(String(date));
   const navigate = useNavigate();
+  const [viewMode, setViewMode] = useState<ViewMode>('heatmap');
+  
   const handleDateSubmit = (formattedDate: string) => {
     navigate(`/day/${formattedDate}`);
   };
@@ -33,11 +36,13 @@ const DateWeatherPage: FC = () => {
 
   return (
     <div className="relative w-full h-screen bg-gray-200">
-      <div className="absolute left-4 top-24 z-20">
+      <div className="absolute left-4 top-4 z-20 flex flex-col gap-2">
+        <MapViewToggle viewMode={viewMode} onViewModeChange={setViewMode} />
+        <Divider my="md" />
         <DateEntryForm onSubmit={handleDateSubmit} currentDate={date} />
       </div>
       <div className="h-full w-full">
-        <WorldMap cities={weatherData} />
+        <WorldMap cities={weatherData} viewMode={viewMode} />
       </div>
     </div>
   );
