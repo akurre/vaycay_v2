@@ -26,7 +26,7 @@ const DateEntryForm: React.FC<DateEntryFormProps> = ({ onSubmit }) => {
 
   return (
     <form onSubmit={handleSubmit}>
-      <div className='mt-xl'>
+      <div className="mt-xl">
         <Select
           placeholder="Month"
           data={monthOptions}

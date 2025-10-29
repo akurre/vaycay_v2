@@ -1,4 +1,6 @@
-export function generateDaysOptions(selectedMonth: string): Array<{ value: string; label: string }> {
+export function generateDaysOptions(
+  selectedMonth: string
+): Array<{ value: string; label: string }> {
   const numberOfDays = new Date(2022, parseInt(selectedMonth, 10), 0).getDate();
   const daysOptions = [];
 
