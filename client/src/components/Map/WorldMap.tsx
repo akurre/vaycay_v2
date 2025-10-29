@@ -1,24 +1,61 @@
-import { MapContainer, TileLayer, Marker } from 'react-leaflet';
-import 'leaflet/dist/leaflet.css';
+import DeckGL from '@deck.gl/react';
+import Map from 'react-map-gl/maplibre';
+import type { MapViewState } from '@deck.gl/core';
 import { WeatherData } from '../../types/cityWeatherDataType';
-import MapPopup from './MapPopup';
-import markerIcon from './utils/markerIcon';
-import { hasCoords } from './utils/hasCoords';
+import { useMapLayers } from './hooks/useMapLayers';
+import { useMapInteractions } from './hooks/useMapInteractions';
+import CityPopup from './CityPopup';
+import MapTooltip from './MapTooltip';
+import 'maplibre-gl/dist/maplibre-gl.css';
 
-function WorldMap({ cities }: { cities: WeatherData[] }) {
+const INITIAL_VIEW_STATE: MapViewState = {
+  longitude: 0,
+  latitude: 20,
+  zoom: 2,
+  pitch: 0,
+  bearing: 0,
+};
+
+export type ViewMode = 'heatmap' | 'markers';
+
+interface WorldMapProps {
+  cities: WeatherData[];
+  viewMode: ViewMode;
+}
+
+function WorldMap({ cities, viewMode }: WorldMapProps) {
+  const layers = useMapLayers(cities, viewMode);
+  const { selectedCity, hoverInfo, handleHover, handleClick, handleClosePopup } =
+    useMapInteractions(cities, viewMode);
+
   return (
-    <MapContainer center={[15, 0]} zoom={3} style={{ height: '100%' }}>
-      <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
-      {cities.filter(hasCoords).map((city, index) => (
-        <Marker
-          key={index} // TODO dont include index in key
-          position={[city.lat, city.long]}
-          icon={markerIcon}
-        >
-          <MapPopup city={city} />
-        </Marker>
-      ))}
-    </MapContainer>
+    <div className="relative h-full w-full">
+      <DeckGL
+        initialViewState={INITIAL_VIEW_STATE}
+        controller={{
+          dragPan: true,
+          dragRotate: false,
+          scrollZoom: true,
+          touchZoom: true,
+          touchRotate: false,
+          keyboard: true,
+          doubleClickZoom: true,
+        }}
+        layers={layers}
+        onHover={handleHover}
+        onClick={handleClick}
+        getTooltip={() => null}
+      >
+        <Map
+          mapStyle="https://basemaps.cartocdn.com/gl/dark-matter-gl-style/style.json"
+          attributionControl={false}
+        />
+      </DeckGL>
+
+      {hoverInfo && <MapTooltip x={hoverInfo.x} y={hoverInfo.y} content={hoverInfo.content} />}
+
+      <CityPopup city={selectedCity} onClose={handleClosePopup} />
+    </div>
   );
 }
 

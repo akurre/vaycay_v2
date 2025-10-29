@@ -1,9 +1,8 @@
-import { FC } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Title, Text } from '@mantine/core';
-import DateEntryForm from '../components/Navigation/dateNavigaton';
+import DateEntryForm from '../components/Navigation/DateEntryForm';
 
-const Home: FC = () => {
+const Home = () => {
   const navigate = useNavigate();
   const handleDateSubmit = (formattedDate: string) => {
     navigate(`/day/${formattedDate}`);
@@ -30,8 +29,4 @@ const Home: FC = () => {
   );
 };
 
-const App: React.FC = () => {
-  return <Home />;
-};
-
-export default App;
+export default Home;

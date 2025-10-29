@@ -1,16 +1,19 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Select, Button } from '@mantine/core';
 import { monthOptions } from '../../utils/monthOptions';
 import { generateDaysOptions } from '../../utils/generateDaysOptions';
+import { getMonthLabel } from './utils/getMonthLabel';
+import { getDayLabel } from './utils/getDayLabel';
 
 interface DateEntryFormProps {
   onSubmit: (formattedDate: string) => void;
+  currentDate?: string;
 }
 
-const DateEntryForm: React.FC<DateEntryFormProps> = ({ onSubmit }) => {
-  const [month, setMonth] = useState<string | null>(null);
-  const [day, setDay] = useState<string | null>(null);
+const DateEntryForm = ({ onSubmit, currentDate }: DateEntryFormProps) => {
+  const [month, setMonth] = useState<string | null>(currentDate ? currentDate.slice(0, 2) : null);
+  const [day, setDay] = useState<string | null>(currentDate ? currentDate.slice(2, 4) : null);
   const navigate = useNavigate();
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
@@ -26,9 +29,9 @@ const DateEntryForm: React.FC<DateEntryFormProps> = ({ onSubmit }) => {
 
   return (
     <form onSubmit={handleSubmit}>
-      <div className="mt-xl">
+      <div className="flex flex-col gap-2">
         <Select
-          placeholder="Month"
+          placeholder={getMonthLabel(month)}
           data={monthOptions}
           value={month}
           onChange={setMonth}
@@ -36,7 +39,7 @@ const DateEntryForm: React.FC<DateEntryFormProps> = ({ onSubmit }) => {
           searchable
         />
         <Select
-          placeholder="Day"
+          placeholder={getDayLabel(day)}
           data={dayOptions}
           value={day}
           onChange={setDay}
