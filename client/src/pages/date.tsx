@@ -1,6 +1,6 @@
 import { useNavigate, useParams } from 'react-router-dom';
 import { useWeatherByDate } from '../api/dates/useWeatherByDate';
-import DateEntryForm from '../components/Navigation/dateNavigaton';
+import DateEntryForm from '../components/Navigation/DateEntryForm';
 import WorldMap, { ViewMode } from '../components/Map/WorldMap';
 import MapViewToggle from '../components/Map/MapViewToggle';
 import { FC, useState } from 'react';

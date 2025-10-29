@@ -1,16 +1,20 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Select, Button } from '@mantine/core';
 import { monthOptions } from '../../utils/monthOptions';
 import { generateDaysOptions } from '../../utils/generateDaysOptions';
+import { getMonthLabel } from './utils/getMonthLabel';
+import { getDayLabel } from './utils/getDayLabel';
 
 interface DateEntryFormProps {
   onSubmit: (formattedDate: string) => void;
   currentDate?: string;
 }
 
-const DateEntryForm: React.FC<DateEntryFormProps> = ({ onSubmit, currentDate }) => {
-  const [month, setMonth] = useState<string | null>(currentDate ? currentDate.slice(0, 2) : null);
+const DateEntryForm = ({ onSubmit, currentDate }: DateEntryFormProps) => {
+  const [month, setMonth] = useState<string | null>(
+    currentDate ? currentDate.slice(0, 2) : null
+  );
   const [day, setDay] = useState<string | null>(currentDate ? currentDate.slice(2, 4) : null);
   const navigate = useNavigate();
 
@@ -24,17 +28,6 @@ const DateEntryForm: React.FC<DateEntryFormProps> = ({ onSubmit, currentDate }) 
   };
 
   const dayOptions = month ? generateDaysOptions(month) : [];
-
-  const getMonthLabel = (monthValue: string | null) => {
-    if (!monthValue) return 'Month';
-    const monthOption = monthOptions.find(opt => opt.value === monthValue);
-    return monthOption ? monthOption.label : 'Month';
-  };
-
-  const getDayLabel = (dayValue: string | null) => {
-    if (!dayValue) return 'Day';
-    return dayValue;
-  };
 
   return (
     <form onSubmit={handleSubmit}>

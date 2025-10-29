@@ -1,35 +1,18 @@
 import { Modal, Text, Title } from '@mantine/core';
 import { WeatherData } from '../../types/cityWeatherDataType';
-import { formatTemperature } from '../../utils/formatTemperature';
 import { toTitleCase } from '../../utils/toTitleCase';
+import Field from './CityPopup/Field';
+import TemperatureSection from './CityPopup/TemperatureSection';
+import PrecipitationSection from './CityPopup/PrecipitationSection';
+import LocationSection from './CityPopup/LocationSection';
 
 interface CityPopupProps {
   city: WeatherData | null;
   onClose: () => void;
 }
 
-interface FieldProps {
-  label: string;
-  value: string | number;
-  monospace?: boolean;
-}
-
-const Field = ({ label, value, monospace }: FieldProps) => (
-  <div>
-    <Text size="sm" c="dimmed">
-      {label}
-    </Text>
-    <Text size="md" ff={monospace ? 'monospace' : undefined}>
-      {value}
-    </Text>
-  </div>
-);
-
 function CityPopup({ city, onClose }: CityPopupProps) {
   if (!city) return null;
-
-  const formatValue = (value: number | null, unit: string) =>
-    value !== null ? `${value.toFixed(1)}${unit}` : 'N/A';
 
   return (
     <Modal
@@ -48,35 +31,13 @@ function CityPopup({ city, onClose }: CityPopupProps) {
         {city.suburb && <Field label="Suburb" value={toTitleCase(city.suburb)} />}
         <Field label="Date" value={city.date} />
 
-        <div className="mt-2 border-t border-gray-200 pt-3">
-          <Text size="sm" fw={600} mb="xs">
-            Temperature
-          </Text>
-          <div className="grid grid-cols-3 gap-2">
-            <Field
-              label="Average"
-              value={formatTemperature(city.avgTemperature) ?? 'N/A'}
-            />
-            <Field
-              label="Max"
-              value={formatTemperature(city.maxTemperature) ?? 'N/A'}
-            />
-            <Field
-              label="Min"
-              value={formatTemperature(city.minTemperature) ?? 'N/A'}
-            />
-          </div>
-        </div>
+        <TemperatureSection
+          avgTemperature={city.avgTemperature}
+          maxTemperature={city.maxTemperature}
+          minTemperature={city.minTemperature}
+        />
 
-        <div className="border-t border-gray-200 pt-3">
-          <Text size="sm" fw={600} mb="xs">
-            Precipitation
-          </Text>
-          <div className="grid grid-cols-2 gap-2">
-            <Field label="Rainfall" value={formatValue(city.precipitation, ' mm')} />
-            <Field label="Snow Depth" value={formatValue(city.snowDepth, ' cm')} />
-          </div>
-        </div>
+        <PrecipitationSection precipitation={city.precipitation} snowDepth={city.snowDepth} />
 
         {city.population && (
           <div className="border-t border-gray-200 pt-3">
@@ -88,15 +49,7 @@ function CityPopup({ city, onClose }: CityPopupProps) {
           <Field label="Weather Station" value={city.stationName} />
         </div>
 
-        {city.lat !== null && city.long !== null && (
-          <div className="border-t border-gray-200 pt-3">
-            <Field
-              label="Coordinates"
-              value={`${city.lat.toFixed(4)}°, ${city.long.toFixed(4)}°`}
-              monospace
-            />
-          </div>
-        )}
+        <LocationSection lat={city.lat} long={city.long} />
       </div>
     </Modal>
   );
