@@ -10,11 +10,7 @@ const LocationSection = ({ lat, long }: LocationSectionProps) => {
 
   return (
     <div className="border-t border-gray-200 pt-3">
-      <Field
-        label="Coordinates"
-        value={`${lat.toFixed(4)}°, ${long.toFixed(4)}°`}
-        monospace
-      />
+      <Field label="Coordinates" value={`${lat.toFixed(4)}°, ${long.toFixed(4)}°`} monospace />
     </div>
   );
 };

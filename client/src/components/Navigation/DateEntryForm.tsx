@@ -12,9 +12,7 @@ interface DateEntryFormProps {
 }
 
 const DateEntryForm = ({ onSubmit, currentDate }: DateEntryFormProps) => {
-  const [month, setMonth] = useState<string | null>(
-    currentDate ? currentDate.slice(0, 2) : null
-  );
+  const [month, setMonth] = useState<string | null>(currentDate ? currentDate.slice(0, 2) : null);
   const [day, setDay] = useState<string | null>(currentDate ? currentDate.slice(2, 4) : null);
   const navigate = useNavigate();
 

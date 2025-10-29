@@ -11,7 +11,7 @@ const DateWeatherPage: FC = () => {
   const { dataReturned: weatherData, isError, isLoading } = useWeatherByDate(String(date));
   const navigate = useNavigate();
   const [viewMode, setViewMode] = useState<ViewMode>('heatmap');
-  
+
   const handleDateSubmit = (formattedDate: string) => {
     navigate(`/day/${formattedDate}`);
   };

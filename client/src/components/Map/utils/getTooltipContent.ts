@@ -12,7 +12,7 @@ export const getTooltipContent = (
 ): string | null => {
   // Find city within a small radius (approximately 50km at equator)
   const TOLERANCE = 0.5;
-  
+
   const city = cities.find(
     (c) =>
       c.lat !== null &&

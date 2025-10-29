@@ -10,9 +10,7 @@ export interface HeatmapDataPoint {
  * Filters out cities without coordinates and normalizes temperature values
  * Uses actual min/max from the dataset for better visualization
  */
-export const transformToHeatmapData = (
-  cities: WeatherData[]
-): HeatmapDataPoint[] => {
+export const transformToHeatmapData = (cities: WeatherData[]): HeatmapDataPoint[] => {
   const validCities = cities.filter(
     (city) => city.lat !== null && city.long !== null && city.avgTemperature !== null
   );
@@ -40,18 +38,14 @@ export const transformToHeatmapData = (
 /**
  * Normalizes temperature to a 0-1 scale based on actual data range
  */
-const normalizeTemperature = (
-  tempCelsius: number,
-  minTemp: number,
-  maxTemp: number
-): number => {
+const normalizeTemperature = (tempCelsius: number, minTemp: number, maxTemp: number): number => {
   if (maxTemp === minTemp) {
     return 0.5; // If all temperatures are the same, use middle value
   }
-  
+
   // Clamp temperature to expected range
   const clampedTemp = Math.max(minTemp, Math.min(maxTemp, tempCelsius));
-  
+
   // Normalize to 0-1 range
   return (clampedTemp - minTemp) / (maxTemp - minTemp);
 };
