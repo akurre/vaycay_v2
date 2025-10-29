@@ -8,17 +8,17 @@ interface PopupProps {
   city: WeatherData;
 }
 
-const MapPopup = (Props: PopupProps) => {
-  const weatherItems = formatWeatherData(Props.city);
+const MapPopup = ({ city }: PopupProps) => {
+  const weatherItems = formatWeatherData(city);
 
   return (
     <Popup>
       <div className="space-y-1">
         <Title order={4}>
-          {toTitleCase(Props.city.city)}, {Props.city.country ?? ''}
+          {toTitleCase(city.city)}, {city.country ?? ''}
         </Title>
-        {weatherItems.map((item, index) => (
-          <Text key={index} size="sm">
+        {weatherItems.map((item) => (
+          <Text key={item.label} size="sm">
             {item.label}: {item.value}
           </Text>
         ))}
