@@ -38,7 +38,7 @@ const DateWeatherPage: FC = () => {
     <div className="relative w-full h-screen bg-gray-200">
       <div className="absolute left-4 top-4 z-20 flex flex-col gap-2">
         <MapViewToggle viewMode={viewMode} onViewModeChange={setViewMode} />
-        <Divider my="md" />
+        <Divider my="xs" />
         <DateEntryForm onSubmit={handleDateSubmit} currentDate={date} />
       </div>
       <div className="h-full w-full">
