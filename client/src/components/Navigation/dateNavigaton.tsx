@@ -6,11 +6,12 @@ import { generateDaysOptions } from '../../utils/generateDaysOptions';
 
 interface DateEntryFormProps {
   onSubmit: (formattedDate: string) => void;
+  currentDate?: string;
 }
 
-const DateEntryForm: React.FC<DateEntryFormProps> = ({ onSubmit }) => {
-  const [month, setMonth] = useState<string | null>(null);
-  const [day, setDay] = useState<string | null>(null);
+const DateEntryForm: React.FC<DateEntryFormProps> = ({ onSubmit, currentDate }) => {
+  const [month, setMonth] = useState<string | null>(currentDate ? currentDate.slice(0, 2) : null);
+  const [day, setDay] = useState<string | null>(currentDate ? currentDate.slice(2, 4) : null);
   const navigate = useNavigate();
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
@@ -24,11 +25,23 @@ const DateEntryForm: React.FC<DateEntryFormProps> = ({ onSubmit }) => {
 
   const dayOptions = month ? generateDaysOptions(month) : [];
 
+  const getMonthLabel = (monthValue: string | null) => {
+    if (!monthValue) return 'Month';
+    const monthOption = monthOptions.find(opt => opt.value === monthValue);
+    return monthOption ? monthOption.label : 'Month';
+  };
+
+  const getDayLabel = (dayValue: string | null) => {
+    if (!dayValue) return 'Day';
+    return dayValue;
+  };
+
   return (
     <form onSubmit={handleSubmit}>
-      <div className="mt-xl">
+      <div className="flex flex-col mt-md gap-2">
+        
         <Select
-          placeholder="Month"
+          placeholder={getMonthLabel(month)}
           data={monthOptions}
           value={month}
           onChange={setMonth}
@@ -36,7 +49,7 @@ const DateEntryForm: React.FC<DateEntryFormProps> = ({ onSubmit }) => {
           searchable
         />
         <Select
-          placeholder="Day"
+          placeholder={getDayLabel(day)}
           data={dayOptions}
           value={day}
           onChange={setDay}

@@ -32,14 +32,12 @@ const DateWeatherPage: FC = () => {
   }
 
   return (
-    <div className="w-full h-screen bg-gray-200 flex justify-center items-center">
-      <div className="absolute inset-0 flex justify-center items-center z-10">
-        <DateEntryForm onSubmit={handleDateSubmit} />
+    <div className="relative w-full h-screen bg-gray-200">
+      <div className="absolute left-4 top-24 z-20">
+        <DateEntryForm onSubmit={handleDateSubmit} currentDate={date} />
       </div>
-      <div className="border-2 border-solid border-red-500">
-        <div style={{ height: '95vh', width: '95vw' }}>
-          <WorldMap cities={weatherData} />
-        </div>
+      <div className="h-full w-full">
+        <WorldMap cities={weatherData} />
       </div>
     </div>
   );

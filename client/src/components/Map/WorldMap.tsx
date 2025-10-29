@@ -8,6 +8,7 @@ import type { MapViewState, PickingInfo } from '@deck.gl/core';
 import { WeatherData } from '../../types/cityWeatherDataType';
 import { transformToHeatmapData } from './utils/transformToHeatmapData';
 import { getTooltipContent } from './utils/getTooltipContent';
+import CityPopup from './CityPopup';
 import 'maplibre-gl/dist/maplibre-gl.css';
 
 const INITIAL_VIEW_STATE: MapViewState = {
@@ -34,6 +35,7 @@ type ViewMode = 'heatmap' | 'markers';
 
 function WorldMap({ cities }: { cities: WeatherData[] }) {
   const [viewMode, setViewMode] = useState<ViewMode>('heatmap');
+  const [selectedCity, setSelectedCity] = useState<WeatherData | null>(null);
   const [hoverInfo, setHoverInfo] = useState<{
     x: number;
     y: number;
@@ -114,6 +116,24 @@ function WorldMap({ cities }: { cities: WeatherData[] }) {
     }
   };
 
+  const handleClick = (info: PickingInfo) => {
+    if (viewMode === 'markers' && info.object) {
+      setSelectedCity(info.object as WeatherData);
+    } else if (viewMode === 'heatmap' && info.coordinate) {
+      const [longitude, latitude] = info.coordinate;
+      const city = cities.find(
+        (c) =>
+          c.lat !== null &&
+          c.long !== null &&
+          Math.abs(c.lat - latitude) < 0.5 &&
+          Math.abs(c.long - longitude) < 0.5
+      );
+      if (city) {
+        setSelectedCity(city);
+      }
+    }
+  };
+
   return (
     <div className="relative h-full w-full">
       <DeckGL
@@ -129,6 +149,7 @@ function WorldMap({ cities }: { cities: WeatherData[] }) {
         }}
         layers={layers}
         onHover={handleHover}
+        onClick={handleClick}
         getTooltip={() => null}
       >
         <Map
@@ -158,15 +179,18 @@ function WorldMap({ cities }: { cities: WeatherData[] }) {
       {/* Tooltip */}
       {hoverInfo && (
         <div
-          className="pointer-events-none absolute z-10 rounded bg-gray-900 px-3 py-2 text-sm text-white shadow-lg"
+          className="pointer-events-none absolute z-50 rounded bg-gray-900 px-3 py-2 text-sm text-white shadow-lg border border-gray-700"
           style={{
             left: hoverInfo.x + 10,
             top: hoverInfo.y + 10,
           }}
         >
-          {hoverInfo.content}
+          <div className="whitespace-pre-line">{hoverInfo.content}</div>
         </div>
       )}
+
+      {/* Detailed Popup */}
+      <CityPopup city={selectedCity} onClose={() => setSelectedCity(null)} />
     </div>
   );
 }
