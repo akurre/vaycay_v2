@@ -24,10 +24,8 @@ const Home = () => {
           By the way this is super duper in progress. Come back later for more.
         </Text>
 
-        <Text ff='monospace' fw={700} mt='xl' mb='md'>
-          <span style={{ color: appColors.primary }}>
-            Select your weather below!
-          </span>
+        <Text ff="monospace" fw={700} mt="xl" mb="md">
+          <span style={{ color: appColors.primary }}>Select your weather below!</span>
         </Text>
         <DateEntryForm onSubmit={handleDateSubmit} />
       </main>
@@ -36,4 +34,3 @@ const Home = () => {
 };
 
 export default Home;
-
