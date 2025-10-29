@@ -5,43 +5,45 @@ export interface WeatherDataItem {
   value: string;
 }
 
+type FieldConfig = {
+  key: keyof WeatherData;
+  label: string;
+  format: (value: number) => string;
+};
+
+const fieldConfigs: FieldConfig[] = [
+  {
+    key: 'maxTemperature',
+    label: 'Max Temp',
+    format: (value) => `${value.toFixed(1)}°C`,
+  },
+  {
+    key: 'minTemperature',
+    label: 'Min Temp',
+    format: (value) => `${value.toFixed(1)}°C`,
+  },
+  {
+    key: 'avgTemperature',
+    label: 'Average Temp',
+    format: (value) => `${value.toFixed(1)}°C`,
+  },
+  {
+    key: 'precipitation',
+    label: 'Precipitation',
+    format: (value) => `${value}cm`,
+  },
+  {
+    key: 'population',
+    label: 'Population',
+    format: (value) => value.toLocaleString(),
+  },
+];
+
 export function formatWeatherData(city: WeatherData): WeatherDataItem[] {
-  const items: WeatherDataItem[] = [];
-
-  if (city.maxTemperature !== null) {
-    items.push({
-      label: 'Max Temp',
-      value: `${city.maxTemperature.toFixed(1)}°C`,
-    });
-  }
-
-  if (city.minTemperature !== null) {
-    items.push({
-      label: 'Min Temp',
-      value: `${city.minTemperature.toFixed(1)}°C`,
-    });
-  }
-
-  if (city.avgTemperature !== null) {
-    items.push({
-      label: 'Average Temp',
-      value: `${city.avgTemperature.toFixed(1)}°C`,
-    });
-  }
-
-  if (city.precipitation !== null) {
-    items.push({
-      label: 'Precipitation',
-      value: `${city.precipitation}cm`,
-    });
-  }
-
-  if (city.population !== null) {
-    items.push({
-      label: 'Population',
-      value: city.population.toLocaleString(),
-    });
-  }
-
-  return items;
+  return fieldConfigs
+    .filter((config) => city[config.key] !== null)
+    .map((config) => ({
+      label: config.label,
+      value: config.format(city[config.key] as number),
+    }));
 }
