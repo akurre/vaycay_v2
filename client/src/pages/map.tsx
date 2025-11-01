@@ -1,13 +1,14 @@
 import { FC, useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { useDebouncedValue } from '@mantine/hooks';
-import { Loader, Alert, Divider } from '@mantine/core';
+import { Alert, Divider } from '@mantine/core';
 import { useWeatherByDate } from '../api/dates/useWeatherByDate';
 import DateEntryForm from '../components/Navigation/DateEntryForm';
 import DateSlider from '../components/Navigation/DateSlider';
 import WorldMap, { ViewMode } from '../components/Map/WorldMap';
 import MapViewToggle from '../components/Map/MapViewToggle';
 import { getTodayAsMMDD } from '@/utils/getTodayAsMMDD';
+import { useWeatherStore } from '../stores/useWeatherStore';
 
 const MapPage: FC = () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -23,11 +24,23 @@ const MapPage: FC = () => {
   const [debouncedDate] = useDebouncedValue(selectedDate, 300);
 
   const { dataReturned: weatherData, isError, isLoading } = useWeatherByDate(debouncedDate);
+  
+  // zustand store for persisting displayed data
+  const { displayedWeatherData, setDisplayedWeatherData, setIsLoadingWeather } = useWeatherStore();
 
   // update url when date changes (for bookmarking/sharing)
   useEffect(() => {
     setSearchParams({ date: selectedDate }, { replace: true });
   }, [selectedDate, setSearchParams]);
+
+  // update store when weather data changes
+  useEffect(() => {
+    setIsLoadingWeather(isLoading);
+    
+    if (weatherData && !isLoading) {
+      setDisplayedWeatherData(weatherData);
+    }
+  }, [weatherData, isLoading, setDisplayedWeatherData, setIsLoadingWeather]);
 
   const handleDateChange = (newDate: string) => {
     setSelectedDate(newDate);
@@ -56,17 +69,9 @@ const MapPage: FC = () => {
         <DateEntryForm onSubmit={handleDateChange} currentDate={selectedDate} />
       </div>
 
-      {/* loading overlay */}
-      {isLoading && (
-        // todo handle black bg
-        <div className="absolute inset-0 z-10 flex justify-center items-center bg-black bg-opacity-20">
-          <Loader size="xl" />
-        </div>
-      )}
-
       {/* map */}
       <div className="h-full w-full">
-        {weatherData && <WorldMap cities={weatherData} viewMode={viewMode} />}
+        {displayedWeatherData && <WorldMap cities={displayedWeatherData} viewMode={viewMode} />}
       </div>
     </div>
   );

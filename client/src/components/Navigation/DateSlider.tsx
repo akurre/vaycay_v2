@@ -1,7 +1,8 @@
 import { FC } from 'react';
-import { Slider, Text } from '@mantine/core';
+import { Slider, Text, Loader } from '@mantine/core';
 import { dateToDayOfYear } from '@/utils/dateToDayOfYear';
 import { dayOfYearToDate } from '@/utils/dayOfYearToDate';
+import { useWeatherStore } from '@/stores/useWeatherStore';
 
 interface DateSliderProps {
   currentDate: string;
@@ -9,6 +10,7 @@ interface DateSliderProps {
 }
 
 const DateSlider: FC<DateSliderProps> = ({ currentDate, onDateChange }) => {
+  const { isLoadingWeather } = useWeatherStore();
   const dayOfYear = dateToDayOfYear(currentDate);
 
   const handleSliderChange = (value: number) => {
@@ -17,7 +19,7 @@ const DateSlider: FC<DateSliderProps> = ({ currentDate, onDateChange }) => {
   };
 
   // month boundaries for labels
-  const monthMarks = [ // todo make const
+  const monthMarks = [ // todo put into const file
     { value: 1, label: 'Jan' },
     { value: 32, label: 'Feb' },
     { value: 60, label: 'Mar' },
@@ -34,9 +36,12 @@ const DateSlider: FC<DateSliderProps> = ({ currentDate, onDateChange }) => {
 
   return (
     <div className="w-full">
-      <Text size="sm" fw={500} mb="xs">
-        Select Date (Day {dayOfYear} of 365)
-      </Text>
+      <div className="flex items-center gap-2 mb-2">
+        <Text size="sm" fw={500}>
+          Select Date (Day {dayOfYear} of 365)
+        </Text>
+        {isLoadingWeather && <Loader size="xs" />}
+      </div>
       <Slider
         value={dayOfYear}
         onChange={handleSliderChange}
