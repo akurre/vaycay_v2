@@ -19,7 +19,8 @@ const DateSlider: FC<DateSliderProps> = ({ currentDate, onDateChange }) => {
   };
 
   // month boundaries for labels
-  const monthMarks = [ // todo put into const file
+  const monthMarks = [
+    // todo put into const file
     { value: 1, label: 'Jan' },
     { value: 32, label: 'Feb' },
     { value: 60, label: 'Mar' },
