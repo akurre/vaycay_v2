@@ -3,7 +3,6 @@ import { useSearchParams } from 'react-router-dom';
 import { useDebouncedValue } from '@mantine/hooks';
 import { Alert, Divider } from '@mantine/core';
 import { useWeatherByDate } from '../api/dates/useWeatherByDate';
-import DateEntryForm from '../components/Navigation/DateEntryForm';
 import DateSlider from '../components/Navigation/DateSlider';
 import WorldMap, { ViewMode } from '../components/Map/WorldMap';
 import MapViewToggle from '../components/Map/MapViewToggle';
@@ -62,12 +61,10 @@ const MapPage: FC = () => {
       {/* todo handle white bg */}
       <div className="absolute left-4 top-4 z-20 flex flex-col gap-2 bg-white p-4 rounded-lg shadow-lg max-w-md">
         <MapViewToggle viewMode={viewMode} onViewModeChange={setViewMode} />
-        <Divider my="xs" />
-        <DateSlider currentDate={selectedDate} onDateChange={handleDateChange} />
-        <Divider my="xs" />
-        <DateEntryForm onSubmit={handleDateChange} currentDate={selectedDate} />
       </div>
-
+      <div className='absolute top-8 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-30' style={{ width: 'calc(100% - 16rem)', maxWidth: '56rem' }}>
+        <DateSlider currentDate={selectedDate} onDateChange={handleDateChange} />
+      </div>
       {/* map */}
       <div className="h-full w-full">
         {displayedWeatherData && <WorldMap cities={displayedWeatherData} viewMode={viewMode} />}

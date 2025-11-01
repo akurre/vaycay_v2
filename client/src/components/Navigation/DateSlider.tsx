@@ -36,9 +36,9 @@ const DateSlider: FC<DateSliderProps> = ({ currentDate, onDateChange }) => {
   ];
 
   return (
-    <div className="w-full">
-      <div className="flex items-center gap-2 mb-2">
-        <Text size="sm" fw={500}>
+    <div className="w-full border-solid border border-red-500">
+      <div className="flex w-full items-center gap-2 mb-2">
+        <Text size="md" fw={500}>
           Select Date (Day {dayOfYear} of 365)
         </Text>
         {isLoadingWeather && <Loader size="xs" />}
