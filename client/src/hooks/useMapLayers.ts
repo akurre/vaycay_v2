@@ -34,9 +34,7 @@ export const useMapLayers = (cities: WeatherData[], viewMode: ViewMode) => {
       }),
       new ScatterplotLayer({
         id: 'city-markers',
-        data: cities.filter(
-          (c) => c.lat !== null && c.long !== null && c.avgTemperature !== null
-        ),
+        data: cities.filter((c) => c.lat !== null && c.long !== null && c.avgTemperature !== null),
         getPosition: (d) => [d.long!, d.lat!],
         getFillColor: (d) => getMarkerColor(d.avgTemperature!),
         getRadius: 50000,

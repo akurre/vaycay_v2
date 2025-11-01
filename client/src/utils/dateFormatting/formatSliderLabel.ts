@@ -24,9 +24,9 @@ export function formatSliderLabel(dayOfYear: number): string {
   const date = dayOfYearToDate(dayOfYear);
   const month = date.substring(0, 2);
   const day = date.substring(2, 4);
-  
+
   // remove leading zero from day
   const dayNumber = parseInt(day, 10);
-  
+
   return `${MONTH_ABBREVIATIONS[month]} ${dayNumber}`;
 }

@@ -10,7 +10,7 @@ describe('MapViewToggle', () => {
 
     // component now uses icons, so we check for radio inputs by value
     const radioInputs = screen.getAllByRole('radio');
-    
+
     expect(radioInputs).toHaveLength(2);
     expect(radioInputs[0]).toHaveAttribute('value', 'markers');
     expect(radioInputs[1]).toHaveAttribute('value', 'heatmap');
@@ -22,8 +22,10 @@ describe('MapViewToggle', () => {
 
     // find the checked radio input
     const radioInputs = screen.getAllByRole('radio');
-    const heatmapInput = radioInputs.find((input) => (input as HTMLInputElement).value === 'heatmap');
-    
+    const heatmapInput = radioInputs.find(
+      (input) => (input as HTMLInputElement).value === 'heatmap'
+    );
+
     expect(heatmapInput).toBeChecked();
   });
 
@@ -33,8 +35,10 @@ describe('MapViewToggle', () => {
 
     // find the checked radio input
     const radioInputs = screen.getAllByRole('radio');
-    const markersInput = radioInputs.find((input) => (input as HTMLInputElement).value === 'markers');
-    
+    const markersInput = radioInputs.find(
+      (input) => (input as HTMLInputElement).value === 'markers'
+    );
+
     expect(markersInput).toBeChecked();
   });
 
@@ -48,7 +52,7 @@ describe('MapViewToggle', () => {
     // find the label for markers input and click it
     const markersLabel = container.querySelector('label[for*="markers"]');
     expect(markersLabel).toBeInTheDocument();
-    
+
     if (markersLabel) {
       await user.click(markersLabel);
     }
@@ -66,7 +70,7 @@ describe('MapViewToggle', () => {
     // find the label for heatmap input and click it
     const heatmapLabel = container.querySelector('label[for*="heatmap"]');
     expect(heatmapLabel).toBeInTheDocument();
-    
+
     if (heatmapLabel) {
       await user.click(heatmapLabel);
     }

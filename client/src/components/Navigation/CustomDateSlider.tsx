@@ -32,10 +32,8 @@ const CustomDateSlider: FC<CustomDateSliderProps> = ({
 
   return (
     <div className="w-full">
-
       {/* track container */}
       <div className="relative h-2 cursor-pointer" ref={ref}>
-        
         {/* semi-transparent track background */}
         <div
           className="absolute inset-0 rounded-full"
@@ -50,11 +48,7 @@ const CustomDateSlider: FC<CustomDateSliderProps> = ({
             color: appColors.primary,
           }}
         >
-          {isLoading ? 
-            <Loader size={20}/>
-            :
-            <IconGripVertical size={20} stroke={1.5} />
-          }
+          {isLoading ? <Loader size={20} /> : <IconGripVertical size={20} stroke={1.5} />}
         </div>
 
         {/* date label above thumb */}

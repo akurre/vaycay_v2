@@ -11,15 +11,9 @@ describe('CustomDateSlider', () => {
 
   it('renders with initial value', () => {
     const mockOnChange = vi.fn();
-    
+
     render(
-      <CustomDateSlider
-        value={100}
-        onChange={mockOnChange}
-        min={1}
-        max={365}
-        marks={mockMarks}
-      />
+      <CustomDateSlider value={100} onChange={mockOnChange} min={1} max={365} marks={mockMarks} />
     );
 
     // check that the formatted label is displayed (day 100 = Apr. 10)
@@ -28,15 +22,9 @@ describe('CustomDateSlider', () => {
 
   it('displays all month marks', () => {
     const mockOnChange = vi.fn();
-    
+
     render(
-      <CustomDateSlider
-        value={100}
-        onChange={mockOnChange}
-        min={1}
-        max={365}
-        marks={mockMarks}
-      />
+      <CustomDateSlider value={100} onChange={mockOnChange} min={1} max={365} marks={mockMarks} />
     );
 
     // verify all month labels are rendered
@@ -47,15 +35,9 @@ describe('CustomDateSlider', () => {
 
   it('formats label correctly for different values', () => {
     const mockOnChange = vi.fn();
-    
+
     const { rerender } = render(
-      <CustomDateSlider
-        value={1}
-        onChange={mockOnChange}
-        min={1}
-        max={365}
-        marks={mockMarks}
-      />
+      <CustomDateSlider value={1} onChange={mockOnChange} min={1} max={365} marks={mockMarks} />
     );
 
     // day 1 = Jan. 1
@@ -63,13 +45,7 @@ describe('CustomDateSlider', () => {
 
     // rerender with different value (day 365 = Dec. 31)
     rerender(
-      <CustomDateSlider
-        value={365}
-        onChange={mockOnChange}
-        min={1}
-        max={365}
-        marks={mockMarks}
-      />
+      <CustomDateSlider value={365} onChange={mockOnChange} min={1} max={365} marks={mockMarks} />
     );
 
     expect(screen.getByText('Dec. 31')).toBeInTheDocument();
@@ -77,15 +53,9 @@ describe('CustomDateSlider', () => {
 
   it('renders with correct structure', () => {
     const mockOnChange = vi.fn();
-    
+
     const { container } = render(
-      <CustomDateSlider
-        value={100}
-        onChange={mockOnChange}
-        min={1}
-        max={365}
-        marks={mockMarks}
-      />
+      <CustomDateSlider value={100} onChange={mockOnChange} min={1} max={365} marks={mockMarks} />
     );
 
     // verify the track container exists
