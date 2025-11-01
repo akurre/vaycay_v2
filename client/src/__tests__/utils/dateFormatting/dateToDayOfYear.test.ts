@@ -1,5 +1,5 @@
+import { dateToDayOfYear } from '@/utils/dateFormatting/dateToDayOfYear';
 import { describe, it, expect } from 'vitest';
-import { dateToDayOfYear } from '../dateToDayOfYear';
 
 describe('dateToDayOfYear', () => {
   it('converts january 1st to day 1', () => {

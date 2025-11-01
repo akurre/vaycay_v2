@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeEach } from 'vitest';
 import { renderHook, act } from '@testing-library/react';
-import { useWeatherStore } from '../../stores/useWeatherStore';
-import type { WeatherData } from '../../types/cityWeatherDataType';
+import { useWeatherStore } from '@/stores/useWeatherStore';
+import type { WeatherData } from '@/types/cityWeatherDataType';
 
 describe('useWeatherStore', () => {
   beforeEach(() => {
@@ -27,15 +27,19 @@ describe('useWeatherStore', () => {
       {
         city: 'Milan',
         country: 'Italy',
+        state: null,
+        suburb: null,
+        date: '0615',
         lat: 45.4642,
         long: 9.19,
+        population: 1000000,
         avgTemperature: 25.5,
         minTemperature: 20.0,
         maxTemperature: 30.0,
         precipitation: 10.5,
         snowDepth: null,
-        windSpeed: 5.2,
-        cloudCover: 50,
+        stationName: 'Milan Station',
+        submitterId: 'test-1',
       },
     ];
 
@@ -77,15 +81,19 @@ describe('useWeatherStore', () => {
       {
         city: 'Rome',
         country: 'Italy',
+        state: null,
+        suburb: null,
+        date: '0615',
         lat: 41.9028,
         long: 12.4964,
+        population: 2000000,
         avgTemperature: 28.0,
         minTemperature: 22.0,
         maxTemperature: 34.0,
         precipitation: 5.0,
         snowDepth: null,
-        windSpeed: 3.5,
-        cloudCover: 30,
+        stationName: 'Rome Station',
+        submitterId: 'test-2',
       },
     ];
 
@@ -107,28 +115,36 @@ describe('useWeatherStore', () => {
       {
         city: 'Milan',
         country: 'Italy',
+        state: null,
+        suburb: null,
+        date: '0615',
         lat: 45.4642,
         long: 9.19,
+        population: 1000000,
         avgTemperature: 25.5,
         minTemperature: 20.0,
         maxTemperature: 30.0,
         precipitation: 10.5,
         snowDepth: null,
-        windSpeed: 5.2,
-        cloudCover: 50,
+        stationName: 'Milan Station',
+        submitterId: 'test-1',
       },
       {
         city: 'Rome',
         country: 'Italy',
+        state: null,
+        suburb: null,
+        date: '0615',
         lat: 41.9028,
         long: 12.4964,
+        population: 2000000,
         avgTemperature: 28.0,
         minTemperature: 22.0,
         maxTemperature: 34.0,
         precipitation: 5.0,
         snowDepth: null,
-        windSpeed: 3.5,
-        cloudCover: 30,
+        stationName: 'Rome Station',
+        submitterId: 'test-2',
       },
     ];
 

@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { formatValue } from '../../utils/formatValue';
+import { formatValue } from '@/utils/dataFormatting/formatValue';
 
 describe('formatValue', () => {
   it('formats value with unit correctly', () => {

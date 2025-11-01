@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { toTitleCase } from '../../utils/toTitleCase';
+import { toTitleCase } from '@/utils/dataFormatting/toTitleCase';
 
 describe('toTitleCase', () => {
   it('converts single word to title case', () => {

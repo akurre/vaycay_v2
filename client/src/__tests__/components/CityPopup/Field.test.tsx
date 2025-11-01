@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { render, screen } from '../../../test-utils';
-import Field from '../../../components/Map/CityPopup/Field'; // todo fix formatting
+import Field from '@/components/CityPopup/Field';
 
 describe('Field', () => {
   it('renders label and value correctly', () => {

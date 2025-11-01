@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { formatTemperature } from '../../utils/formatTemperature';
+import { formatTemperature } from '@/utils/tempFormatting/formatTemperature';
 
 describe('formatTemperature', () => {
   it('formats positive temperature correctly', () => {
