@@ -1,8 +1,8 @@
 import { FC } from 'react';
-import { Slider, Text, Loader } from '@mantine/core';
 import { dateToDayOfYear } from '@/utils/dateFormatting/dateToDayOfYear';
 import { dayOfYearToDate } from '@/utils/dateFormatting/dayOfYearToDate';
 import { useWeatherStore } from '@/stores/useWeatherStore';
+import CustomDateSlider from './CustomDateSlider';
 
 interface DateSliderProps {
   currentDate: string;
@@ -36,28 +36,14 @@ const DateSlider: FC<DateSliderProps> = ({ currentDate, onDateChange }) => {
   ];
 
   return (
-    <div className="w-full border-solid border border-red-500">
-      <div className="flex w-full items-center gap-2 mb-2">
-        <Text size="md" fw={500}>
-          Select Date (Day {dayOfYear} of 365)
-        </Text>
-        {isLoadingWeather && <Loader size="xs" />}
-      </div>
-      <Slider
+    <div className="w-full">
+      <CustomDateSlider
         value={dayOfYear}
+        isLoading={isLoadingWeather}
         onChange={handleSliderChange}
         min={1}
         max={365}
         marks={monthMarks}
-        label={(value) => {
-          const date = dayOfYearToDate(value);
-          const month = date.substring(0, 2);
-          const day = date.substring(2, 4);
-          return `${month}/${day}`;
-        }}
-        styles={{
-          markLabel: { fontSize: '0.75rem' },
-        }}
       />
     </div>
   );

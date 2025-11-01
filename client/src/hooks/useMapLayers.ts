@@ -23,6 +23,12 @@ export const useMapLayers = (cities: WeatherData[], viewMode: ViewMode) => {
             colorRange: COLOR_RANGE,
             aggregation: 'MEAN',
             opacity: 0.6,
+            transitions: {
+              getWeight: {
+                duration: 500,
+                easing: (t: number) => t * (2 - t),
+              },
+            },
           })
         : new ScatterplotLayer({
             id: 'city-markers',
@@ -36,6 +42,12 @@ export const useMapLayers = (cities: WeatherData[], viewMode: ViewMode) => {
             radiusMaxPixels: 8,
             pickable: true,
             opacity: 0.8,
+            transitions: {
+              getFillColor: {
+                duration: 500,
+                easing: (t: number) => t * (2 - t),
+              },
+            },
           }),
     ];
   }, [cities, viewMode, heatmapData]);

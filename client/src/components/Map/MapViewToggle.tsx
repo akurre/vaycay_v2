@@ -1,4 +1,6 @@
-import { Button } from '@mantine/core';
+import { SegmentedControl } from '@mantine/core';
+import { IconChartBubble, IconMapPin } from '@tabler/icons-react';
+import TooltipWrapper from '../shared/TooltipWrapper';
 
 type ViewMode = 'heatmap' | 'markers';
 
@@ -9,22 +11,32 @@ interface MapViewToggleProps {
 
 const MapViewToggle = ({ viewMode, onViewModeChange }: MapViewToggleProps) => {
   return (
-    <div className="flex justify-between gap-2">
-      <Button
-        size="sm"
-        variant={viewMode === 'heatmap' ? 'filled' : 'outline'}
-        onClick={() => onViewModeChange('heatmap')}
-      >
-        Heatmap
-      </Button>
-      <Button
-        size="sm"
-        variant={viewMode === 'markers' ? 'filled' : 'outline'}
-        onClick={() => onViewModeChange('markers')}
-      >
-        Markers
-      </Button>
-    </div>
+    <SegmentedControl
+      value={viewMode}
+      onChange={(value) => onViewModeChange(value as ViewMode)}
+      data={[
+        {
+          value: 'heatmap',
+          label: (
+            <div className="flex items-center gap-2">
+              <TooltipWrapper label='Heatmap View'>
+                <IconChartBubble size={16} />
+              </TooltipWrapper>
+            </div>
+          ),
+        },
+        {
+          value: 'markers',
+          label: (
+            <div className="flex items-center gap-2">
+              <TooltipWrapper label='Marker View'>
+                <IconMapPin size={16} />
+              </TooltipWrapper>
+            </div>
+          ),
+        },
+      ]}
+    />
   );
 };
 

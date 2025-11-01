@@ -1,13 +1,13 @@
 import { FC, useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { useDebouncedValue } from '@mantine/hooks';
-import { Alert, Divider } from '@mantine/core';
+import { Alert } from '@mantine/core';
 import { useWeatherByDate } from '../api/dates/useWeatherByDate';
-import DateSlider from '../components/Navigation/DateSlider';
 import WorldMap, { ViewMode } from '../components/Map/WorldMap';
 import MapViewToggle from '../components/Map/MapViewToggle';
 import { getTodayAsMMDD } from '@/utils/dateFormatting/getTodayAsMMDD';
 import { useWeatherStore } from '../stores/useWeatherStore';
+import DateSliderWrapper from '@/components/Navigation/DateSliderWrapper';
 
 const MapPage: FC = () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -55,16 +55,16 @@ const MapPage: FC = () => {
   }
 
   return (
-    <div className="relative w-full h-screen bg-gray-200">
-      {/* todo handle darkmode / theming better (use mantine theme) */}
+    <div className="relative w-full h-screen">
+
       {/* navigation panel */}
-      {/* todo handle white bg */}
-      <div className="absolute left-4 top-4 z-20 flex flex-col gap-2 bg-white p-4 rounded-lg shadow-lg max-w-md">
+      <div className="absolute top-8 left-4 z-20">
         <MapViewToggle viewMode={viewMode} onViewModeChange={setViewMode} />
       </div>
-      <div className='absolute top-8 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-30' style={{ width: 'calc(100% - 16rem)', maxWidth: '56rem' }}>
-        <DateSlider currentDate={selectedDate} onDateChange={handleDateChange} />
+      <div className='absolute top-16 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-30' style={{ width: 'calc(100% - 16rem)', maxWidth: '56rem' }}>
+        <DateSliderWrapper currentDate={selectedDate} onDateChange={handleDateChange} />
       </div>
+
       {/* map */}
       <div className="h-full w-full">
         {displayedWeatherData && <WorldMap cities={displayedWeatherData} viewMode={viewMode} />}
