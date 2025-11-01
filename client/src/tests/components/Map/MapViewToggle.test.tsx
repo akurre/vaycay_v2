@@ -8,41 +8,50 @@ describe('MapViewToggle', () => {
     const mockOnChange = vi.fn();
     render(<MapViewToggle viewMode="heatmap" onViewModeChange={mockOnChange} />);
 
-    expect(screen.getByText('Heatmap')).toBeInTheDocument();
-    expect(screen.getByText('Markers')).toBeInTheDocument();
+    // component now uses icons, so we check for radio inputs by value
+    const radioInputs = screen.getAllByRole('radio');
+    
+    expect(radioInputs).toHaveLength(2);
+    expect(radioInputs[0]).toHaveAttribute('value', 'heatmap');
+    expect(radioInputs[1]).toHaveAttribute('value', 'markers');
   });
 
   it('shows heatmap as selected when viewMode is heatmap', () => {
     const mockOnChange = vi.fn();
-    const { container } = render(
-      <MapViewToggle viewMode="heatmap" onViewModeChange={mockOnChange} />
-    );
+    render(<MapViewToggle viewMode="heatmap" onViewModeChange={mockOnChange} />);
 
-    // the segmented control applies data-active attribute to the selected option
-    const heatmapButton = container.querySelector('[data-active="true"]');
-    expect(heatmapButton).toBeInTheDocument();
-    expect(heatmapButton?.textContent).toContain('Heatmap');
+    // find the checked radio input
+    const radioInputs = screen.getAllByRole('radio');
+    const heatmapInput = radioInputs.find((input) => (input as HTMLInputElement).value === 'heatmap');
+    
+    expect(heatmapInput).toBeChecked();
   });
 
   it('shows markers as selected when viewMode is markers', () => {
     const mockOnChange = vi.fn();
-    const { container } = render(
-      <MapViewToggle viewMode="markers" onViewModeChange={mockOnChange} />
-    );
+    render(<MapViewToggle viewMode="markers" onViewModeChange={mockOnChange} />);
 
-    // the segmented control applies data-active attribute to the selected option
-    const markersButton = container.querySelector('[data-active="true"]');
-    expect(markersButton).toBeInTheDocument();
-    expect(markersButton?.textContent).toContain('Markers');
+    // find the checked radio input
+    const radioInputs = screen.getAllByRole('radio');
+    const markersInput = radioInputs.find((input) => (input as HTMLInputElement).value === 'markers');
+    
+    expect(markersInput).toBeChecked();
   });
 
   it('calls onViewModeChange with markers when markers option is clicked', async () => {
     const user = userEvent.setup();
     const mockOnChange = vi.fn();
-    render(<MapViewToggle viewMode="heatmap" onViewModeChange={mockOnChange} />);
+    const { container } = render(
+      <MapViewToggle viewMode="heatmap" onViewModeChange={mockOnChange} />
+    );
 
-    const markersButton = screen.getByText('Markers');
-    await user.click(markersButton);
+    // find the label for markers input and click it
+    const markersLabel = container.querySelector('label[for*="markers"]');
+    expect(markersLabel).toBeInTheDocument();
+    
+    if (markersLabel) {
+      await user.click(markersLabel);
+    }
 
     expect(mockOnChange).toHaveBeenCalledWith('markers');
   });
@@ -50,10 +59,17 @@ describe('MapViewToggle', () => {
   it('calls onViewModeChange with heatmap when heatmap option is clicked', async () => {
     const user = userEvent.setup();
     const mockOnChange = vi.fn();
-    render(<MapViewToggle viewMode="markers" onViewModeChange={mockOnChange} />);
+    const { container } = render(
+      <MapViewToggle viewMode="markers" onViewModeChange={mockOnChange} />
+    );
 
-    const heatmapButton = screen.getByText('Heatmap');
-    await user.click(heatmapButton);
+    // find the label for heatmap input and click it
+    const heatmapLabel = container.querySelector('label[for*="heatmap"]');
+    expect(heatmapLabel).toBeInTheDocument();
+    
+    if (heatmapLabel) {
+      await user.click(heatmapLabel);
+    }
 
     expect(mockOnChange).toHaveBeenCalledWith('heatmap');
   });
