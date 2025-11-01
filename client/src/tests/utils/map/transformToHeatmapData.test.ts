@@ -51,10 +51,7 @@ describe('transformToHeatmapData', () => {
   });
 
   it('filters out cities with null latitude', () => {
-    const cities = [
-      createMockCity({ lat: null }),
-      createMockCity({ lat: 45.4642 }),
-    ];
+    const cities = [createMockCity({ lat: null }), createMockCity({ lat: 45.4642 })];
     const result = transformToHeatmapData(cities);
 
     expect(result).toHaveLength(1);
@@ -62,10 +59,7 @@ describe('transformToHeatmapData', () => {
   });
 
   it('filters out cities with null longitude', () => {
-    const cities = [
-      createMockCity({ long: null }),
-      createMockCity({ long: 9.19 }),
-    ];
+    const cities = [createMockCity({ long: null }), createMockCity({ long: 9.19 })];
     const result = transformToHeatmapData(cities);
 
     expect(result).toHaveLength(1);

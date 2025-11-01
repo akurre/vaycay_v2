@@ -24,17 +24,18 @@ describe('useMapInteractions', () => {
     ...overrides,
   });
 
-  const createMockPickingInfo = (overrides?: Partial<PickingInfo>): PickingInfo => ({
-    x: 100,
-    y: 200,
-    coordinate: [9.19, 45.4642],
-    object: null,
-    index: -1,
-    picked: false,
-    layer: null,
-    viewport: null,
-    ...overrides,
-  } as PickingInfo);
+  const createMockPickingInfo = (overrides?: Partial<PickingInfo>): PickingInfo =>
+    ({
+      x: 100,
+      y: 200,
+      coordinate: [9.19, 45.4642],
+      object: null,
+      index: -1,
+      picked: false,
+      layer: null,
+      viewport: null,
+      ...overrides,
+    }) as PickingInfo;
 
   describe('initial state', () => {
     it('initializes with null selectedCity', () => {

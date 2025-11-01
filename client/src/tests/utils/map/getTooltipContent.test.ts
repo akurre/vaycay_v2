@@ -119,11 +119,11 @@ describe('getTooltipContent', () => {
 
   it('checks latitude tolerance correctly', () => {
     const cities = [createMockCity({ lat: 45.4642, long: 9.19 })];
-    
+
     // within tolerance (0.5 degrees)
     expect(getTooltipContent(cities, 9.19, 45.9)).toBe('Milan, Italy\n25.5°C');
     expect(getTooltipContent(cities, 9.19, 45.0)).toBe('Milan, Italy\n25.5°C');
-    
+
     // outside tolerance
     expect(getTooltipContent(cities, 9.19, 46.0)).toBeNull();
     expect(getTooltipContent(cities, 9.19, 44.9)).toBeNull();
@@ -131,11 +131,11 @@ describe('getTooltipContent', () => {
 
   it('checks longitude tolerance correctly', () => {
     const cities = [createMockCity({ lat: 45.4642, long: 9.19 })];
-    
+
     // within tolerance (0.5 degrees)
     expect(getTooltipContent(cities, 9.6, 45.4642)).toBe('Milan, Italy\n25.5°C');
     expect(getTooltipContent(cities, 8.7, 45.4642)).toBe('Milan, Italy\n25.5°C');
-    
+
     // outside tolerance
     expect(getTooltipContent(cities, 9.7, 45.4642)).toBeNull();
     expect(getTooltipContent(cities, 8.6, 45.4642)).toBeNull();

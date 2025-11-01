@@ -75,10 +75,10 @@ describe('getTodayAsMMDD', () => {
   it('returns consistent format across different years', () => {
     vi.setSystemTime(new Date('2023-06-15'));
     const result2023 = getTodayAsMMDD();
-    
+
     vi.setSystemTime(new Date('2024-06-15'));
     const result2024 = getTodayAsMMDD();
-    
+
     expect(result2023).toBe('0615');
     expect(result2024).toBe('0615');
     expect(result2023).toBe(result2024);
@@ -87,7 +87,7 @@ describe('getTodayAsMMDD', () => {
   it('returns 4 character string', () => {
     vi.setSystemTime(new Date('2024-06-15'));
     const result = getTodayAsMMDD();
-    
+
     expect(result).toHaveLength(4);
     expect(typeof result).toBe('string');
   });
