@@ -1,6 +1,6 @@
-import { SegmentedControl } from '@mantine/core';
+import { SegmentedControl, Tooltip } from '@mantine/core';
 import { IconChartBubble, IconMapPin } from '@tabler/icons-react';
-import TooltipWrapper from '../shared/TooltipWrapper';
+import { appColors } from '@/theme';
 
 type ViewMode = 'heatmap' | 'markers';
 
@@ -13,26 +13,28 @@ const MapViewToggle = ({ viewMode, onViewModeChange }: MapViewToggleProps) => {
   return (
     <SegmentedControl
       value={viewMode}
+      color={appColors.primary}
+      transitionDuration={300}
       onChange={(value) => onViewModeChange(value as ViewMode)}
       data={[
         {
           value: 'heatmap',
           label: (
-            <div className="flex items-center gap-2">
-              <TooltipWrapper label='Heatmap View'>
+            <Tooltip label="Heatmap View" withArrow>
+              <div className="flex items-center justify-center">
                 <IconChartBubble size={16} />
-              </TooltipWrapper>
-            </div>
+              </div>
+            </Tooltip>
           ),
         },
         {
           value: 'markers',
           label: (
-            <div className="flex items-center gap-2">
-              <TooltipWrapper label='Marker View'>
+            <Tooltip label="Marker View" withArrow>
+              <div className="flex items-center justify-center">
                 <IconMapPin size={16} />
-              </TooltipWrapper>
-            </div>
+              </div>
+            </Tooltip>
           ),
         },
       ]}
