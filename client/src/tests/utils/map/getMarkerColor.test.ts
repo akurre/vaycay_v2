@@ -20,10 +20,11 @@ describe('getMarkerColor', () => {
   });
 
   it('interpolates colors between thresholds', () => {
-    // test midpoint between 0°C and 8°C
+    // test midpoint between 0°C (135, 206, 250) and 8°C (64, 224, 208)
     const midColor = getMarkerColor(4);
-    expect(midColor[0]).toBeGreaterThan(135);
-    expect(midColor[0]).toBeLessThan(255);
+    // at midpoint, red channel should be between 64 and 135
+    expect(midColor[0]).toBeGreaterThanOrEqual(64);
+    expect(midColor[0]).toBeLessThanOrEqual(135);
     expect(midColor).toHaveLength(3);
   });
 
