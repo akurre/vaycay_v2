@@ -118,6 +118,11 @@ lint: check-prereqs
 	@echo ""
 	@echo "$(YELLOW)Checking server...$(NC)"
 	@cd server && npm run lint || true
+	@echo ""
+	@echo "$(YELLOW)Auto-formatting code with Prettier...$(NC)"
+	@cd client && npx prettier --write "src/**/*.{ts,tsx,css}" || true
+	@echo ""
+	@cd server && npx prettier --write "src/**/*.{ts,tsx}" || true
 	@echo "$(GREEN)✓ Lint check complete$(NC)"
 
 # Auto-fix lint errors in both client and server

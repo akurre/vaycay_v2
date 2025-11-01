@@ -1,6 +1,6 @@
 import { Text } from '@mantine/core';
-import { formatTemperature } from '../../../utils/formatTemperature';
 import Field from './Field';
+import { formatTemperature } from '@/utils/tempFormatting/formatTemperature';
 
 interface TemperatureSectionProps {
   avgTemperature: number | null;

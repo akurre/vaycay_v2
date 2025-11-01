@@ -1,15 +1,13 @@
 import { useMemo } from 'react';
 import { HeatmapLayer } from '@deck.gl/aggregation-layers';
 import { ScatterplotLayer } from '@deck.gl/layers';
-import { WeatherData } from '../../../types/cityWeatherDataType';
-import { transformToHeatmapData } from '../utils/transformToHeatmapData';
-import { getMarkerColor, COLOR_RANGE } from '../utils/getMarkerColor';
-import { useTemperatureRange } from './useTemperatureRange';
-import type { ViewMode } from '../WorldMap';
+import { WeatherData } from '../types/cityWeatherDataType';
+import { transformToHeatmapData } from '../utils/map/transformToHeatmapData';
+import { getMarkerColor, COLOR_RANGE } from '../utils/map/getMarkerColor';
+import type { ViewMode } from '../components/Map/WorldMap';
 
 export const useMapLayers = (cities: WeatherData[], viewMode: ViewMode) => {
   const heatmapData = useMemo(() => transformToHeatmapData(cities), [cities]);
-  const { minTemp, maxTemp } = useTemperatureRange(cities);
 
   return useMemo(() => {
     return [
@@ -20,7 +18,7 @@ export const useMapLayers = (cities: WeatherData[], viewMode: ViewMode) => {
             getPosition: (d) => d.position,
             getWeight: (d) => d.weight,
             radiusPixels: 40,
-            intensity: 0.5,
+            intensity: 1,
             threshold: 0.03,
             colorRange: COLOR_RANGE,
             aggregation: 'MEAN',
@@ -32,7 +30,7 @@ export const useMapLayers = (cities: WeatherData[], viewMode: ViewMode) => {
               (c) => c.lat !== null && c.long !== null && c.avgTemperature !== null
             ),
             getPosition: (d) => [d.long!, d.lat!],
-            getFillColor: (d) => getMarkerColor(d.avgTemperature!, minTemp, maxTemp),
+            getFillColor: (d) => getMarkerColor(d.avgTemperature!),
             getRadius: 50000,
             radiusMinPixels: 3,
             radiusMaxPixels: 8,
@@ -40,5 +38,5 @@ export const useMapLayers = (cities: WeatherData[], viewMode: ViewMode) => {
             opacity: 0.8,
           }),
     ];
-  }, [cities, viewMode, heatmapData, minTemp, maxTemp]);
+  }, [cities, viewMode, heatmapData]);
 };

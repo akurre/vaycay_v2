@@ -1,10 +1,10 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Select, Button } from '@mantine/core';
-import { monthOptions } from '../../utils/monthOptions';
-import { generateDaysOptions } from '../../utils/generateDaysOptions';
-import { getMonthLabel } from './utils/getMonthLabel';
-import { getDayLabel } from './utils/getDayLabel';
+import { monthOptions } from '../../utils/dateFormatting/monthOptions';
+import { generateDaysOptions } from '../../utils/dateFormatting/generateDaysOptions';
+import { getMonthLabel } from '../../utils/navigation/getMonthLabel';
+import { getDayLabel } from '../../utils/navigation/getDayLabel';
 
 interface DateEntryFormProps {
   onSubmit: (formattedDate: string) => void;
