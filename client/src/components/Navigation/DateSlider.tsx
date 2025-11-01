@@ -1,0 +1,60 @@
+import { FC } from 'react';
+import { Slider, Text } from '@mantine/core';
+import { dateToDayOfYear } from '@/utils/dateToDayOfYear';
+import { dayOfYearToDate } from '@/utils/dayOfYearToDate';
+
+interface DateSliderProps {
+  currentDate: string;
+  onDateChange: (date: string) => void;
+}
+
+const DateSlider: FC<DateSliderProps> = ({ currentDate, onDateChange }) => {
+  const dayOfYear = dateToDayOfYear(currentDate);
+
+  const handleSliderChange = (value: number) => {
+    const newDate = dayOfYearToDate(value);
+    onDateChange(newDate);
+  };
+
+  // month boundaries for labels
+  const monthMarks = [ // todo make const
+    { value: 1, label: 'Jan' },
+    { value: 32, label: 'Feb' },
+    { value: 60, label: 'Mar' },
+    { value: 91, label: 'Apr' },
+    { value: 121, label: 'May' },
+    { value: 152, label: 'Jun' },
+    { value: 182, label: 'Jul' },
+    { value: 213, label: 'Aug' },
+    { value: 244, label: 'Sep' },
+    { value: 274, label: 'Oct' },
+    { value: 305, label: 'Nov' },
+    { value: 335, label: 'Dec' },
+  ];
+
+  return (
+    <div className="w-full">
+      <Text size="sm" fw={500} mb="xs">
+        Select Date (Day {dayOfYear} of 365)
+      </Text>
+      <Slider
+        value={dayOfYear}
+        onChange={handleSliderChange}
+        min={1}
+        max={365}
+        marks={monthMarks}
+        label={(value) => {
+          const date = dayOfYearToDate(value);
+          const month = date.substring(0, 2);
+          const day = date.substring(2, 4);
+          return `${month}/${day}`;
+        }}
+        styles={{
+          markLabel: { fontSize: '0.75rem' },
+        }}
+      />
+    </div>
+  );
+};
+
+export default DateSlider;
