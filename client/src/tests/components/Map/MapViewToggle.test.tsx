@@ -12,8 +12,8 @@ describe('MapViewToggle', () => {
     const radioInputs = screen.getAllByRole('radio');
     
     expect(radioInputs).toHaveLength(2);
-    expect(radioInputs[0]).toHaveAttribute('value', 'heatmap');
-    expect(radioInputs[1]).toHaveAttribute('value', 'markers');
+    expect(radioInputs[0]).toHaveAttribute('value', 'markers');
+    expect(radioInputs[1]).toHaveAttribute('value', 'heatmap');
   });
 
   it('shows heatmap as selected when viewMode is heatmap', () => {
