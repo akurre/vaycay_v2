@@ -1,6 +1,6 @@
 import { Text } from '@mantine/core';
-import { formatValue } from '../../../utils/formatValue';
 import Field from './Field';
+import { formatValue } from '@/utils/dataFormatting/formatValue';
 
 interface PrecipitationSectionProps {
   precipitation: number | null;

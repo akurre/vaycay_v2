@@ -1,10 +1,10 @@
 import { useMemo } from 'react';
 import { HeatmapLayer } from '@deck.gl/aggregation-layers';
 import { ScatterplotLayer } from '@deck.gl/layers';
-import { WeatherData } from '../../../types/cityWeatherDataType';
-import { transformToHeatmapData } from '../utils/transformToHeatmapData';
-import { getMarkerColor, COLOR_RANGE } from '../utils/getMarkerColor';
-import type { ViewMode } from '../WorldMap';
+import { WeatherData } from '../types/cityWeatherDataType';
+import { transformToHeatmapData } from '../utils/map/transformToHeatmapData';
+import { getMarkerColor, COLOR_RANGE } from '../utils/map/getMarkerColor';
+import type { ViewMode } from '../components/Map/WorldMap';
 
 export const useMapLayers = (cities: WeatherData[], viewMode: ViewMode) => {
   const heatmapData = useMemo(() => transformToHeatmapData(cities), [cities]);
@@ -18,7 +18,7 @@ export const useMapLayers = (cities: WeatherData[], viewMode: ViewMode) => {
             getPosition: (d) => d.position,
             getWeight: (d) => d.weight,
             radiusPixels: 40,
-            intensity: 0.5,
+            intensity: 1,
             threshold: 0.03,
             colorRange: COLOR_RANGE,
             aggregation: 'MEAN',

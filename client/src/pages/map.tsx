@@ -7,7 +7,7 @@ import DateEntryForm from '../components/Navigation/DateEntryForm';
 import DateSlider from '../components/Navigation/DateSlider';
 import WorldMap, { ViewMode } from '../components/Map/WorldMap';
 import MapViewToggle from '../components/Map/MapViewToggle';
-import { getTodayAsMMDD } from '@/utils/getTodayAsMMDD';
+import { getTodayAsMMDD } from '@/utils/dateFormatting/getTodayAsMMDD';
 import { useWeatherStore } from '../stores/useWeatherStore';
 
 const MapPage: FC = () => {

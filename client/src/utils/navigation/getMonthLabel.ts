@@ -1,4 +1,4 @@
-import { monthOptions } from '../../../utils/monthOptions';
+import { monthOptions } from '../dateFormatting/monthOptions';
 
 export const getMonthLabel = (monthValue: string | null): string => {
   if (!monthValue) return 'Month';

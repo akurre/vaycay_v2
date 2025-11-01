@@ -1,7 +1,7 @@
 import { FC } from 'react';
 import { Slider, Text, Loader } from '@mantine/core';
-import { dateToDayOfYear } from '@/utils/dateToDayOfYear';
-import { dayOfYearToDate } from '@/utils/dayOfYearToDate';
+import { dateToDayOfYear } from '@/utils/dateFormatting/dateToDayOfYear';
+import { dayOfYearToDate } from '@/utils/dateFormatting/dayOfYearToDate';
 import { useWeatherStore } from '@/stores/useWeatherStore';
 
 interface DateSliderProps {
