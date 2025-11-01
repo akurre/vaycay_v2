@@ -15,8 +15,8 @@ describe('getMarkerColor', () => {
   it('returns exact threshold colors at threshold temperatures', () => {
     expect(getMarkerColor(-10)).toEqual([0, 0, 255]); // blue
     expect(getMarkerColor(0)).toEqual([135, 206, 250]); // light blue
-    expect(getMarkerColor(15)).toEqual([154, 205, 50]); // green
-    expect(getMarkerColor(23)).toEqual([255, 255, 0]); // yellow
+    expect(getMarkerColor(13)).toEqual([34, 139, 34]); // green with a little yellow
+    expect(getMarkerColor(19)).toEqual([255, 255, 0]); // mostly yellow
   });
 
   it('interpolates colors between thresholds', () => {

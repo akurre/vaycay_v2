@@ -10,33 +10,46 @@ export const useMapLayers = (cities: WeatherData[], viewMode: ViewMode) => {
   const heatmapData = useMemo(() => transformToHeatmapData(cities), [cities]);
 
   return useMemo(() => {
+    // pre-create both layers and toggle visibility instead of creating/destroying
+    // this prevents expensive layer creation from blocking the segmentedcontrol transition
     return [
-      viewMode === 'heatmap'
-        ? new HeatmapLayer({
-            id: 'temperature-heatmap',
-            data: heatmapData,
-            getPosition: (d) => d.position,
-            getWeight: (d) => d.weight,
-            radiusPixels: 40,
-            intensity: 1,
-            threshold: 0.03,
-            colorRange: COLOR_RANGE,
-            aggregation: 'MEAN',
-            opacity: 0.6,
-          })
-        : new ScatterplotLayer({
-            id: 'city-markers',
-            data: cities.filter(
-              (c) => c.lat !== null && c.long !== null && c.avgTemperature !== null
-            ),
-            getPosition: (d) => [d.long!, d.lat!],
-            getFillColor: (d) => getMarkerColor(d.avgTemperature!),
-            getRadius: 50000,
-            radiusMinPixels: 3,
-            radiusMaxPixels: 8,
-            pickable: true,
-            opacity: 0.8,
-          }),
+      new HeatmapLayer({
+        id: 'temperature-heatmap',
+        data: heatmapData,
+        getPosition: (d) => d.position,
+        getWeight: (d) => d.weight,
+        radiusPixels: 40,
+        intensity: 1,
+        threshold: 0.03,
+        colorRange: COLOR_RANGE,
+        aggregation: 'MEAN',
+        opacity: 0.6,
+        visible: viewMode === 'heatmap',
+        transitions: {
+          getWeight: {
+            duration: 500,
+            easing: (t: number) => t * (2 - t),
+          },
+        },
+      }),
+      new ScatterplotLayer({
+        id: 'city-markers',
+        data: cities.filter((c) => c.lat !== null && c.long !== null && c.avgTemperature !== null),
+        getPosition: (d) => [d.long!, d.lat!],
+        getFillColor: (d) => getMarkerColor(d.avgTemperature!),
+        getRadius: 50000,
+        radiusMinPixels: 3,
+        radiusMaxPixels: 8,
+        pickable: true,
+        opacity: 0.8,
+        visible: viewMode === 'markers',
+        transitions: {
+          getFillColor: {
+            duration: 500,
+            easing: (t: number) => t * (2 - t),
+          },
+        },
+      }),
     ];
-  }, [cities, viewMode, heatmapData]);
+  }, [cities, heatmapData, viewMode]);
 };
