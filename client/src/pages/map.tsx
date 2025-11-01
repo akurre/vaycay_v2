@@ -13,18 +13,16 @@ import { useWeatherStore } from '../stores/useWeatherStore';
 const MapPage: FC = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const urlDate = searchParams.get('date');
-  
+
   // initialize with today's date or url date
-  const [selectedDate, setSelectedDate] = useState<string>(
-    urlDate || getTodayAsMMDD()
-  );
+  const [selectedDate, setSelectedDate] = useState<string>(urlDate || getTodayAsMMDD());
   const [viewMode, setViewMode] = useState<ViewMode>('heatmap');
 
   // debounce the date to avoid excessive api calls while dragging slider
   const [debouncedDate] = useDebouncedValue(selectedDate, 300);
 
   const { dataReturned: weatherData, isError, isLoading } = useWeatherByDate(debouncedDate);
-  
+
   // zustand store for persisting displayed data
   const { displayedWeatherData, setDisplayedWeatherData, setIsLoadingWeather } = useWeatherStore();
 
@@ -36,7 +34,7 @@ const MapPage: FC = () => {
   // update store when weather data changes
   useEffect(() => {
     setIsLoadingWeather(isLoading);
-    
+
     if (weatherData && !isLoading) {
       setDisplayedWeatherData(weatherData);
     }
@@ -46,7 +44,8 @@ const MapPage: FC = () => {
     setSelectedDate(newDate);
   };
 
-  if (isError) { // todo handle errors better
+  if (isError) {
+    // todo handle errors better
     return (
       <div className="w-full h-screen flex justify-center items-center">
         <Alert color="red" title="Error">
@@ -57,8 +56,8 @@ const MapPage: FC = () => {
   }
 
   return (
-    <div className="relative w-full h-screen bg-gray-200"> 
-    {/* todo handle darkmode / theming better (use mantine theme) */}
+    <div className="relative w-full h-screen bg-gray-200">
+      {/* todo handle darkmode / theming better (use mantine theme) */}
       {/* navigation panel */}
       {/* todo handle white bg */}
       <div className="absolute left-4 top-4 z-20 flex flex-col gap-2 bg-white p-4 rounded-lg shadow-lg max-w-md">
