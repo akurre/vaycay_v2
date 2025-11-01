@@ -1,5 +1,5 @@
-import { WeatherData } from '../../../types/cityWeatherDataType';
-import { formatTemperature } from '../../../utils/formatTemperature';
+import { WeatherData } from '../../types/cityWeatherDataType';
+import { formatTemperature } from '../tempFormatting/formatTemperature';
 
 /**
  * Finds the city data for a given coordinate position

@@ -1,10 +1,10 @@
-import { Modal, Text, Title } from '@mantine/core';
+import { Modal, Title } from '@mantine/core';
 import { WeatherData } from '../../types/cityWeatherDataType';
-import { toTitleCase } from '../../utils/toTitleCase';
-import Field from './CityPopup/Field';
-import TemperatureSection from './CityPopup/TemperatureSection';
-import PrecipitationSection from './CityPopup/PrecipitationSection';
-import LocationSection from './CityPopup/LocationSection';
+import { toTitleCase } from '../../utils/dataFormatting/toTitleCase';
+import Field from '../CityPopup/Field';
+import LocationSection from '../CityPopup/LocationSection';
+import PrecipitationSection from '../CityPopup/PrecipitationSection';
+import TemperatureSection from '../CityPopup/TemperatureSection';
 
 interface CityPopupProps {
   city: WeatherData | null;

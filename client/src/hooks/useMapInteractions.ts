@@ -1,8 +1,8 @@
 import { useState, useCallback } from 'react';
 import type { PickingInfo } from '@deck.gl/core';
-import { WeatherData } from '../../../types/cityWeatherDataType';
-import { getTooltipContent } from '../utils/getTooltipContent';
-import type { ViewMode } from '../WorldMap';
+import { WeatherData } from '../types/cityWeatherDataType';
+import { getTooltipContent } from '../utils/map/getTooltipContent';
+import type { ViewMode } from '../components/Map/WorldMap';
 
 interface HoverInfo {
   x: number;
