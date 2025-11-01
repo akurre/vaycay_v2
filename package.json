@@ -8,7 +8,7 @@
     "server"
   ],
   "scripts": {
-    "prepare": "husky",
+    "prepare": "node .husky/install.mjs",
     "lint": "lint-staged",
     "knip": "knip",
     "type-check:all": "npm run -w client -s type-check && npm run -w server -s type-check"

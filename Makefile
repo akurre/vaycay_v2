@@ -1,4 +1,4 @@
-.PHONY: help install db-setup dev clean db-start db-stop server-dev client-dev check-prereqs lint lint-fix type-check format format-check build prisma delete-package
+.PHONY: help install db-setup dev clean db-start db-stop server-dev client-dev check-prereqs lint lint-fix type-check format format-check build prisma delete-package test
 
 # Colors for output
 GREEN := \033[0;32m
@@ -27,6 +27,7 @@ help:
 	@echo "  make format       - Format code with Prettier in client and server"
 	@echo "  make format-check - Check code formatting in client and server"
 	@echo "  make type-check   - Check for TypeScript errors in client and server"
+	@echo "  make test         - Run all tests with coverage"
 	@echo "  make build        - Build client and server for production"
 	@echo ""
 	@echo "$(YELLOW)Utilities:$(NC)"
@@ -193,6 +194,12 @@ delete-package: check-prereqs
 	@echo "$(YELLOW)Generating Prisma client...$(NC)"
 	npm run -w server prisma:generate
 	@echo "$(GREEN)✓ Package cleanup and Prisma generation complete$(NC)"
+
+# Run tests
+test: check-prereqs
+	@echo "$(GREEN)Running tests with coverage...$(NC)"
+	@cd client && npm run test:coverage
+	@echo "$(GREEN)✓ Tests complete$(NC)"
 
 # Clean up - stop all services
 clean:
