@@ -16,6 +16,16 @@ const MapViewToggle = ({ viewMode, onViewModeChange }: MapViewToggleProps) => {
       color={appColors.primary}
       transitionDuration={300}
       onChange={(value) => onViewModeChange(value as ViewMode)}
+      styles={{
+        root: {
+          backgroundColor: 'rgba(255, 255, 255, 0.1)',
+          backdropFilter: 'blur(8px)',
+        },
+        label: {
+          color: 'inherit',
+          opacity: 1,
+        },
+      }}
       data={[
         {
           value: 'markers',

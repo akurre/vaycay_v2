@@ -4,12 +4,12 @@ import { dayOfYearToDate } from '@/utils/dateFormatting/dayOfYearToDate';
 import { useWeatherStore } from '@/stores/useWeatherStore';
 import CustomDateSlider from './CustomDateSlider';
 
-interface DateSliderProps {
+interface DateSliderWrapperProps {
   currentDate: string;
   onDateChange: (date: string) => void;
 }
 
-const DateSlider: FC<DateSliderProps> = ({ currentDate, onDateChange }) => {
+const DateSliderWrapper: FC<DateSliderWrapperProps> = ({ currentDate, onDateChange }) => {
   const { isLoadingWeather } = useWeatherStore();
   const dayOfYear = dateToDayOfYear(currentDate);
 
@@ -49,4 +49,4 @@ const DateSlider: FC<DateSliderProps> = ({ currentDate, onDateChange }) => {
   );
 };
 
-export default DateSlider;
+export default DateSliderWrapper;

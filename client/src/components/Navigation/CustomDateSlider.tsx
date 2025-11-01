@@ -70,13 +70,13 @@ const CustomDateSlider: FC<CustomDateSliderProps> = ({
       </div>
 
       {/* month marks below track */}
-      <div className="relative mt-6">
+      <div className="relative mt-2">
         {marks.map((mark) => {
           const markPosition = ((mark.value - min) / (max - min)) * 100;
           return (
             <div
               key={mark.value}
-              className="absolute -translate-x-1/2 text-xs text-gray-600"
+              className="absolute bg-gray-800 rounded-md -translate-x-1/2 text-xs text-gray-200 font-medium"
               style={{ left: `${markPosition}%` }}
             >
               {mark.label}
