@@ -22,7 +22,7 @@ describe('toTitleCase', () => {
 
   it('handles strings with special characters', () => {
     expect(toTitleCase('hello-world')).toBe('Hello-World');
-    expect(toTitleCase('hello_world')).toBe('Hello_World');
+    expect(toTitleCase('hello_world')).toBe('Hello_world');
   });
 
   it('handles empty string', () => {

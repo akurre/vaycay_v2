@@ -4,10 +4,10 @@ This directory contains all unit tests for the Vaycay application.
 
 ## Test Structure
 
-Tests are organized in a centralized `__tests__` directory that mirrors the `src` structure:
+Tests are organized in a centralized `tests` directory that mirrors the `src` structure:
 
 ```
-src/__tests__/
+src/tests/
 ├── components/        # Component tests
 ├── hooks/            # Custom hook tests
 ├── stores/           # Zustand store tests
