@@ -1,5 +1,5 @@
 // convert a date string in format "MMDD" to day of year (1-365)
-export function dateToDayOfYear(dateStr: string): number {
+export function dateToDayOfYear(dateStr: string | null | undefined): number {
   if (!dateStr || dateStr.length !== 4) {
     return 1;
   }

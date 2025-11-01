@@ -33,8 +33,8 @@ describe('dateToDayOfYear', () => {
   });
 
   it('handles null/undefined input', () => {
-    expect(dateToDayOfYear(null as any)).toBe(1);
-    expect(dateToDayOfYear(undefined as any)).toBe(1);
+    expect(dateToDayOfYear(null)).toBe(1);
+    expect(dateToDayOfYear(undefined)).toBe(1);
   });
 
   it('handles last day of each month correctly', () => {
