@@ -18,21 +18,21 @@ const MapViewToggle = ({ viewMode, onViewModeChange }: MapViewToggleProps) => {
       onChange={(value) => onViewModeChange(value as ViewMode)}
       data={[
         {
-          value: 'heatmap',
-          label: (
-            <Tooltip label="Heatmap View" withArrow>
-              <div className="flex items-center justify-center">
-                <IconChartBubble size={16} />
-              </div>
-            </Tooltip>
-          ),
-        },
-        {
           value: 'markers',
           label: (
             <Tooltip label="Marker View" withArrow>
               <div className="flex items-center justify-center">
                 <IconMapPin size={16} />
+              </div>
+            </Tooltip>
+          ),
+        },
+        {
+          value: 'heatmap',
+          label: (
+            <Tooltip label="Heatmap View" withArrow>
+              <div className="flex items-center justify-center">
+                <IconChartBubble size={16} />
               </div>
             </Tooltip>
           ),

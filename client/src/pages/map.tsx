@@ -15,7 +15,7 @@ const MapPage: FC = () => {
 
   // initialize with today's date or url date
   const [selectedDate, setSelectedDate] = useState<string>(urlDate || getTodayAsMMDD());
-  const [viewMode, setViewMode] = useState<ViewMode>('heatmap');
+  const [viewMode, setViewMode] = useState<ViewMode>('markers');
 
   // debounce the date to avoid excessive api calls while dragging slider
   const [debouncedDate] = useDebouncedValue(selectedDate, 300);

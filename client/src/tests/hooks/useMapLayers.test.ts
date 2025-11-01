@@ -45,28 +45,35 @@ describe('useMapLayers', () => {
     const { result } = renderHook(() => useMapLayers(mockCities, 'markers'));
 
     expect(Array.isArray(result.current)).toBe(true);
-    expect(result.current).toHaveLength(1);
+    expect(result.current).toHaveLength(2);
   });
 
-  it('returns heatmap layer when viewMode is heatmap', () => {
+  it('returns both layers with heatmap visible when viewMode is heatmap', () => {
     const { result } = renderHook(() => useMapLayers(mockCities, 'heatmap'));
 
-    expect(result.current).toHaveLength(1);
+    expect(result.current).toHaveLength(2);
     expect(result.current[0].id).toBe('temperature-heatmap');
+    expect(result.current[0].props.visible).toBe(true);
+    expect(result.current[1].id).toBe('city-markers');
+    expect(result.current[1].props.visible).toBe(false);
   });
 
-  it('returns scatterplot layer when viewMode is markers', () => {
+  it('returns both layers with markers visible when viewMode is markers', () => {
     const { result } = renderHook(() => useMapLayers(mockCities, 'markers'));
 
-    expect(result.current).toHaveLength(1);
-    expect(result.current[0].id).toBe('city-markers');
+    expect(result.current).toHaveLength(2);
+    expect(result.current[0].id).toBe('temperature-heatmap');
+    expect(result.current[0].props.visible).toBe(false);
+    expect(result.current[1].id).toBe('city-markers');
+    expect(result.current[1].props.visible).toBe(true);
   });
 
   it('handles empty cities array', () => {
     const { result } = renderHook(() => useMapLayers([], 'markers'));
 
-    expect(result.current).toHaveLength(1);
-    expect(result.current[0].id).toBe('city-markers');
+    expect(result.current).toHaveLength(2);
+    expect(result.current[0].id).toBe('temperature-heatmap');
+    expect(result.current[1].id).toBe('city-markers');
   });
 
   it('filters out cities with null coordinates in marker mode', () => {
@@ -93,8 +100,8 @@ describe('useMapLayers', () => {
 
     const { result } = renderHook(() => useMapLayers(citiesWithNulls, 'markers'));
 
-    expect(result.current).toHaveLength(1);
-    // the layer should only include cities with valid coordinates
+    expect(result.current).toHaveLength(2);
+    // the scatterplot layer should only include cities with valid coordinates
   });
 
   it('memoizes layers when inputs do not change', () => {
@@ -121,13 +128,21 @@ describe('useMapLayers', () => {
       }
     );
 
-    const markersLayer = result.current;
-    expect(markersLayer[0].id).toBe('city-markers');
+    const initialLayers = result.current;
+    // both layers exist, but markers should be visible
+    expect(initialLayers[0].id).toBe('temperature-heatmap');
+    expect(initialLayers[0].props.visible).toBe(false);
+    expect(initialLayers[1].id).toBe('city-markers');
+    expect(initialLayers[1].props.visible).toBe(true);
 
     rerender({ cities: mockCities, viewMode: 'heatmap' as 'markers' | 'heatmap' });
 
-    const heatmapLayer = result.current;
-    expect(heatmapLayer[0].id).toBe('temperature-heatmap');
+    const updatedLayers = result.current;
+    // both layers still exist, but heatmap should now be visible
+    expect(updatedLayers[0].id).toBe('temperature-heatmap');
+    expect(updatedLayers[0].props.visible).toBe(true);
+    expect(updatedLayers[1].id).toBe('city-markers');
+    expect(updatedLayers[1].props.visible).toBe(false);
   });
 
   it('updates layers when cities data changes', () => {
